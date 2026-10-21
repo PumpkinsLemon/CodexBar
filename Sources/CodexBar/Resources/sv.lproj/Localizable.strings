@@ -2699,3 +2699,9 @@
 "Leave blank to keep the saved credential." = "Lämna tomt för att behålla de sparade inloggningsuppgifterna.";
 
 "No personal budget configured" = "Ingen personlig budget har konfigurerats";
+
+// Session usage browser
+"Search sessions" = "Sök sessioner";
+"No matching sessions" = "Inga matchande sessioner";
+"Select a session" = "Välj en session";
+"Cached input is included in input; reasoning is included in output." = "Cachelagrad indata ingår i indata; resonemangstoken ingår i utdata.";

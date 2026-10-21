@@ -1,5 +1,21 @@
 # Cost reporting periods
 
+## Conversation usage details
+
+In the Codex cost submenu, click a conversation to inspect its input, cached input, uncached input, output,
+reasoning, requests, estimated cost, and per-model breakdown. The search icon next to Conversations opens
+the same browser for all conversations retained in that menu's current account and history window.
+Search matches conversation names or IDs, and results are ordered by recent activity.
+
+The browser uses the existing cost snapshot and preferred currency. Cached input is a subset of input;
+reasoning is a subset of output. Unavailable counters or prices remain unavailable rather than becoming
+zero. Hide personal information also masks the browser's names and prevents search from revealing them.
+
+Synthetic-data previews: [conversation details](screenshots/session-usage-browser-synthetic.png) and
+[privacy mode](screenshots/session-usage-browser-private-synthetic.png).
+
+## History windows
+
 The menu's **History window** supports rolling days, **Month to date**, and **All**. Usage & Spend uses the same period model and keeps its own range selection. Existing saved day counts retain their rolling windows; the dashboard's former All selection migrates to All available history.
 
 Usage & Spend groups ranges longer than 45 reporting days by week, and ranges longer than 180 days by month. Select a bucket to inspect its days, then a day with hourly records to inspect individual hours. Daily scrolling keeps whole reporting days visible across daylight-saving changes. Hour labels use a shared 24-hour clock and include UTC offsets in the inspector to distinguish repeated hours. The legend can isolate an account without changing dashboard totals. It shows sources with recorded amounts in the displayed range, drilled interval, or hourly day, including recorded zero-dollar amounts. Sources without priced records in that scope are omitted; account labels and colors stay stable. Legend chips and inspector amounts wrap in narrow windows. Daily inspection only selects existing buckets, so plot padding cannot produce an adjacent date with an empty inspector.

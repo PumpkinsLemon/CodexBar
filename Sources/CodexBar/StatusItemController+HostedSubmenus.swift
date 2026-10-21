@@ -450,7 +450,24 @@ extension StatusItemController {
             projects: provider == .codex ? tokenSnapshot.projects : [],
             sessions: provider == .codex ? tokenSnapshot.sessions : [],
             hidePersonalInfo: self.settings.hidePersonalInfo,
-            width: width)
+            width: width,
+            onBrowseSessions: { [weak self, weak submenu] sessionID in
+                guard let self else { return }
+                submenu?.cancelTracking()
+                let context = SessionUsageBrowserContext(
+                    providerName: ProviderDescriptorRegistry.descriptor(for: provider).metadata.displayName,
+                    windowLabel: tokenSnapshot.periodLabel,
+                    sessions: tokenSnapshot.sessions,
+                    currencyCode: displayConversion.currencyCode,
+                    costMultiplier: displayConversion.multiplier,
+                    timeZone: self.settings.costUsageBucketCalendar.timeZone)
+                DispatchQueue.main.async {
+                    SessionUsagePresenter.shared.present(
+                        context: context,
+                        settings: self.settings,
+                        sessionID: sessionID)
+                }
+            })
         let hosting = MenuHostingView(rootView: chartView.codexBarLocalized())
         let scrollView = CostHistoryMenuScrollView(
             hosting: hosting,

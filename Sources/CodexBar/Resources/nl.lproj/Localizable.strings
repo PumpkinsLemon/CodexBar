@@ -2697,3 +2697,9 @@
 "Leave blank to keep the saved credential." = "Laat leeg om de opgeslagen inloggegevens te behouden.";
 
 "No personal budget configured" = "Geen persoonlijk budget ingesteld";
+
+// Session usage browser
+"Search sessions" = "Sessies zoeken";
+"No matching sessions" = "Geen overeenkomende sessies";
+"Select a session" = "Selecteer een sessie";
+"Cached input is included in input; reasoning is included in output." = "Invoer uit de cache is inbegrepen in invoer; redeneertokens zijn inbegrepen in uitvoer.";

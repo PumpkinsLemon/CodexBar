@@ -2668,3 +2668,9 @@
 "Leave blank to keep the saved credential." = "저장된 인증 정보를 유지하려면 비워 두세요.";
 
 "No personal budget configured" = "개인 예산이 설정되지 않았습니다";
+
+// Session usage browser
+"Search sessions" = "세션 검색";
+"No matching sessions" = "일치하는 세션 없음";
+"Select a session" = "세션 선택";
+"Cached input is included in input; reasoning is included in output." = "캐시 입력은 입력에 포함되고 추론 토큰은 출력에 포함됩니다.";

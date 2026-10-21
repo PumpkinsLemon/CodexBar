@@ -2702,3 +2702,9 @@
 "Leave blank to keep the saved credential." = "Deixeu-ho en blanc per conservar la credencial desada.";
 
 "No personal budget configured" = "No hi ha cap pressupost personal configurat";
+
+// Session usage browser
+"Search sessions" = "Cerca sessions";
+"No matching sessions" = "No hi ha sessions coincidents";
+"Select a session" = "Selecciona una sessió";
+"Cached input is included in input; reasoning is included in output." = "L’entrada en memòria cau està inclosa en l’entrada; els tokens de raonament estan inclosos en la sortida.";

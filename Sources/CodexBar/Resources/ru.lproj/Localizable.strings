@@ -2701,3 +2701,9 @@
 "Leave blank to keep the saved credential." = "Оставьте поле пустым, чтобы сохранить текущие учётные данные.";
 
 "No personal budget configured" = "Личный бюджет не настроен";
+
+// Session usage browser
+"Search sessions" = "Поиск сеансов";
+"No matching sessions" = "Подходящие сеансы не найдены";
+"Select a session" = "Выберите сеанс";
+"Cached input is included in input; reasoning is included in output." = "Кэшированный ввод включён во ввод; токены рассуждений включены в вывод.";

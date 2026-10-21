@@ -2698,3 +2698,9 @@
 "Leave blank to keep the saved credential." = "Déjalo en blanco para conservar la credencial guardada.";
 
 "No personal budget configured" = "No hay ningún presupuesto personal configurado";
+
+// Session usage browser
+"Search sessions" = "Buscar sesiones";
+"No matching sessions" = "No hay sesiones coincidentes";
+"Select a session" = "Selecciona una sesión";
+"Cached input is included in input; reasoning is included in output." = "La entrada en caché está incluida en la entrada; los tokens de razonamiento están incluidos en la salida.";

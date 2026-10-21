@@ -2705,3 +2705,9 @@
 "Leave blank to keep the saved credential." = "Leave blank to keep the saved credential.";
 
 "No personal budget configured" = "No personal budget configured";
+
+// Session usage browser
+"Search sessions" = "Search sessions";
+"No matching sessions" = "No matching sessions";
+"Select a session" = "Select a session";
+"Cached input is included in input; reasoning is included in output." = "Cached input is included in input; reasoning is included in output.";

@@ -2700,3 +2700,9 @@
 "Leave blank to keep the saved credential." = "Залиште порожнім, щоб зберегти поточні облікові дані.";
 
 "No personal budget configured" = "Особистий бюджет не налаштовано";
+
+// Session usage browser
+"Search sessions" = "Пошук сеансів";
+"No matching sessions" = "Відповідних сеансів немає";
+"Select a session" = "Виберіть сеанс";
+"Cached input is included in input; reasoning is included in output." = "Кешований ввід включено до вводу; токени міркування включено до виводу.";

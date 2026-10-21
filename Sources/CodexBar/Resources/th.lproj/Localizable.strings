@@ -2702,3 +2702,9 @@
 "Leave blank to keep the saved credential." = "เว้นว่างไว้เพื่อใช้ข้อมูลรับรองที่บันทึกไว้ต่อไป";
 
 "No personal budget configured" = "ยังไม่ได้กำหนดงบประมาณส่วนตัว";
+
+// Session usage browser
+"Search sessions" = "ค้นหาเซสชัน";
+"No matching sessions" = "ไม่พบเซสชันที่ตรงกัน";
+"Select a session" = "เลือกเซสชัน";
+"Cached input is included in input; reasoning is included in output." = "อินพุตที่แคชรวมอยู่ในอินพุตแล้ว และโทเค็นการให้เหตุผลรวมอยู่ในเอาต์พุตแล้ว";

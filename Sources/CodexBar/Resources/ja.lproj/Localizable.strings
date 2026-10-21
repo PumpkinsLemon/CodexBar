@@ -2700,3 +2700,9 @@
 "Leave blank to keep the saved credential." = "保存済みの認証情報を維持するには空欄にしてください。";
 
 "No personal budget configured" = "個人予算が設定されていません";
+
+// Session usage browser
+"Search sessions" = "セッションを検索";
+"No matching sessions" = "一致するセッションがありません";
+"Select a session" = "セッションを選択";
+"Cached input is included in input; reasoning is included in output." = "キャッシュ入力は入力に、推論トークンは出力に含まれます。";

@@ -2703,3 +2703,9 @@
 "Leave blank to keep the saved credential." = "Kayıtlı kimlik bilgisini korumak için boş bırakın.";
 
 "No personal budget configured" = "Kişisel bütçe yapılandırılmadı";
+
+// Session usage browser
+"Search sessions" = "Oturum ara";
+"No matching sessions" = "Eşleşen oturum yok";
+"Select a session" = "Bir oturum seçin";
+"Cached input is included in input; reasoning is included in output." = "Önbelleğe alınan girdi, girdiye dahildir; akıl yürütme tokenleri çıktıya dahildir.";

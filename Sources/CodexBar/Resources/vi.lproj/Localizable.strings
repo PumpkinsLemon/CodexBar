@@ -2701,3 +2701,9 @@
 "Leave blank to keep the saved credential." = "Để trống để giữ thông tin xác thực đã lưu.";
 
 "No personal budget configured" = "Chưa thiết lập ngân sách cá nhân";
+
+// Session usage browser
+"Search sessions" = "Tìm phiên";
+"No matching sessions" = "Không có phiên phù hợp";
+"Select a session" = "Chọn một phiên";
+"Cached input is included in input; reasoning is included in output." = "Đầu vào được lưu đệm đã nằm trong đầu vào; token suy luận đã nằm trong đầu ra.";

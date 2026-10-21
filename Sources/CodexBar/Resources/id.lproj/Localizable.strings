@@ -2702,3 +2702,9 @@
 "Leave blank to keep the saved credential." = "Biarkan kosong untuk mempertahankan kredensial tersimpan.";
 
 "No personal budget configured" = "Belum ada anggaran pribadi yang dikonfigurasi";
+
+// Session usage browser
+"Search sessions" = "Cari sesi";
+"No matching sessions" = "Tidak ada sesi yang cocok";
+"Select a session" = "Pilih sesi";
+"Cached input is included in input; reasoning is included in output." = "Input cache sudah termasuk dalam input; token penalaran sudah termasuk dalam output.";

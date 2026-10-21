@@ -2704,3 +2704,9 @@
 "Leave blank to keep the saved credential." = "اتركه فارغًا للاحتفاظ ببيانات الاعتماد المحفوظة.";
 
 "No personal budget configured" = "لم يتم إعداد ميزانية شخصية";
+
+// Session usage browser
+"Search sessions" = "البحث في الجلسات";
+"No matching sessions" = "لا توجد جلسات مطابقة";
+"Select a session" = "اختر جلسة";
+"Cached input is included in input; reasoning is included in output." = "يتضمن الإدخال المدخلات المخزنة مؤقتًا، ويتضمن الإخراج رموز الاستدلال.";

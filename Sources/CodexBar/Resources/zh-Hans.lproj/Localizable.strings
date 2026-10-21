@@ -2692,3 +2692,9 @@
 "Leave blank to keep the saved credential." = "留空以保留已保存的凭据。";
 
 "No personal budget configured" = "尚未配置个人预算";
+
+// Session usage browser
+"Search sessions" = "搜索会话";
+"No matching sessions" = "没有匹配的会话";
+"Select a session" = "选择一个会话";
+"Cached input is included in input; reasoning is included in output." = "缓存输入已包含在输入中；推理 Token 已包含在输出中。";
