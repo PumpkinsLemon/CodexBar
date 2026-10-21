@@ -2708,3 +2708,14 @@
 "No matching sessions" = "Tidak ada sesi yang cocok";
 "Select a session" = "Pilih sesi";
 "Cached input is included in input; reasoning is included in output." = "Input cache sudah termasuk dalam input; token penalaran sudah termasuk dalam output.";
+"Recent activity" = "Aktivitas terbaru";
+"Sort by" = "Urutkan berdasarkan";
+"Ascending" = "Menaik";
+"Descending" = "Menurun";
+"Each turn includes its recorded model calls within this period. Messages sharing a turn cannot be priced separately." = "Setiap giliran mencakup permintaan model yang tercatat dalam periode ini. Pesan dalam giliran yang sama tidak dapat dihitung biayanya secara terpisah.";
+"No turn-level usage records are available." = "Tidak ada catatan penggunaan per giliran.";
+"Unattributed usage" = "Penggunaan tanpa atribusi";
+"Turn %d" = "Giliran %d";
+"Model requests" = "Permintaan model";
+"Tool activity has no separate recorded token or monetary cost." = "Panggilan alat tidak memiliki biaya token atau uang yang tercatat secara terpisah.";
+"Request %d" = "Permintaan %d";

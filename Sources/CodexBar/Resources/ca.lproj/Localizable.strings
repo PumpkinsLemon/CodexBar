@@ -2708,3 +2708,14 @@
 "No matching sessions" = "No hi ha sessions coincidents";
 "Select a session" = "Selecciona una sessió";
 "Cached input is included in input; reasoning is included in output." = "L’entrada en memòria cau està inclosa en l’entrada; els tokens de raonament estan inclosos en la sortida.";
+"Recent activity" = "Activitat recent";
+"Sort by" = "Ordena per";
+"Ascending" = "Ascendent";
+"Descending" = "Descendent";
+"Each turn includes its recorded model calls within this period. Messages sharing a turn cannot be priced separately." = "Cada torn inclou les peticions al model registrades en aquest període. Els missatges del mateix torn no es poden valorar per separat.";
+"No turn-level usage records are available." = "No hi ha registres d’ús per torn disponibles.";
+"Unattributed usage" = "Ús sense atribuir";
+"Turn %d" = "Torn %d";
+"Model requests" = "Peticions al model";
+"Tool activity has no separate recorded token or monetary cost." = "No es registra cap cost independent en tokens o diners per a les crides a eines.";
+"Request %d" = "Petició %d";

@@ -2698,3 +2698,14 @@
 "No matching sessions" = "没有匹配的会话";
 "Select a session" = "选择一个会话";
 "Cached input is included in input; reasoning is included in output." = "缓存输入已包含在输入中；推理 Token 已包含在输出中。";
+"Recent activity" = "最近活动";
+"Sort by" = "排序依据";
+"Ascending" = "升序";
+"Descending" = "降序";
+"Each turn includes its recorded model calls within this period. Messages sharing a turn cannot be priced separately." = "每轮包含该时间范围内记录的模型请求；同一轮中的多条消息无法分别计费。";
+"No turn-level usage records are available." = "没有可用的轮次用量记录。";
+"Unattributed usage" = "未归属的用量";
+"Turn %d" = "第 %d 轮";
+"Model requests" = "模型请求";
+"Tool activity has no separate recorded token or monetary cost." = "日志未单独记录工具调用的 Token 或费用。";
+"Request %d" = "第 %d 次请求";

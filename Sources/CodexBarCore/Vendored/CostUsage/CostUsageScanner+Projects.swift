@@ -43,7 +43,8 @@ extension CostUsageScanner {
             priorityTurns: priorityTurns,
             pricingResolver: pricingResolver)
         guard includeBreakdowns else { return (daily, [], []) }
-        var latestSessions: [String: (usage: CostUsageFileUsage, report: CostUsageDailyReport, path: String)] = [:]
+        var latestSessions: [String: (
+            usage: CostUsageFileUsage, report: CostUsageDailyReport, path: String, turns: [CostUsageSessionTurn])] = [:]
         let projectPathResolver = CodexCanonicalProjectPathResolver()
         var accumulatorsByProjectPath: [String: CodexProjectBreakdownAccumulator] = [:]
         for (filePath, usage) in cache.files {
@@ -58,19 +59,23 @@ extension CostUsageScanner {
             var fileCache = CostUsageCache()
             fileCache.files[filePath] = usage
             fileCache.days = usage.days
+            var turns = SessionTurns()
             let report = Self.buildCodexReportFromCache(
                 cache: fileCache,
                 range: range,
                 modelsDevCatalog: resolvedModelsDevCatalog,
                 priorityTurns: priorityTurns,
-                pricingResolver: pricingResolver)
+                pricingResolver: pricingResolver,
+                onPricedRow: { row, cost, isComplete in
+                    turns.add(row, cost: cost, isComplete: isComplete)
+                })
             let includeSession = sessionRoots.map {
                 Self.isWithinCodexRoots(fileURL: URL(fileURLWithPath: filePath), roots: $0)
             } ?? true
             if includeSession {
                 let id = usage.sessionId ?? URL(fileURLWithPath: filePath).deletingPathExtension().lastPathComponent
                 if !id.isEmpty, latestSessions[id].map({ $0.usage.mtimeUnixMs < usage.mtimeUnixMs }) ?? true {
-                    latestSessions[id] = (usage, report, filePath)
+                    latestSessions[id] = (usage, report, filePath, turns.build(report: report))
                 }
             }
             guard includeProjects, !report.data.isEmpty else { continue }
@@ -123,7 +128,7 @@ extension CostUsageScanner {
                 usage: file.usage,
                 report: file.report,
                 projectPathResolver: projectPathResolver,
-                performanceSamples: performanceSamples)
+                activity: (performanceSamples, file.turns))
         }
         .sorted { lhs, rhs in
             if lhs.lastActivity != rhs.lastActivity {
@@ -139,7 +144,8 @@ extension CostUsageScanner {
         usage: CostUsageFileUsage,
         report: CostUsageDailyReport,
         projectPathResolver: CodexCanonicalProjectPathResolver,
-        performanceSamples: [CostUsageTurnPerformanceSample]) -> CostUsageSessionBreakdown
+        activity: (samples: [CostUsageTurnPerformanceSample], turns: [CostUsageSessionTurn]))
+        -> CostUsageSessionBreakdown
     {
         let summary = report.summary
         let requestCounts = report.data.compactMap(\.requestCount)
@@ -152,6 +158,7 @@ extension CostUsageScanner {
             inputTokens: summary?.totalInputTokens,
             cachedInputTokens: summary?.cacheReadTokens,
             outputTokens: summary?.totalOutputTokens,
+            reasoningTokens: summary?.reasoningTokens,
             totalTokens: summary?.totalTokens,
             requestCount: requestCounts.isEmpty ? nil : requestCounts.reduce(0, +),
             costUSD: summary?.totalCostUSD,
@@ -159,7 +166,8 @@ extension CostUsageScanner {
             projectPath: projectPath,
             projectName: projectPath.map { Self.codexProjectName(path: $0) },
             title: usage.codexSession?.title,
-            turnPerformanceSamples: performanceSamples,
+            turnPerformanceSamples: activity.samples,
+            turns: activity.turns,
             toolActivitySource: source)
         session.workingDirectory = usage.projectPath
         return session

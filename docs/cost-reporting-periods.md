@@ -5,7 +5,21 @@
 In the Codex cost submenu, click a conversation to inspect its input, cached input, uncached input, output,
 reasoning, requests, estimated cost, and per-model breakdown. The search icon next to Conversations opens
 the same browser for all conversations retained in that menu's current account and history window.
-Search matches conversation names or IDs, and results are ordered by recent activity.
+Search matches conversation names or IDs. Sort by recent activity, token count, or cost in either
+direction; unknown values stay last.
+
+Expand a turn to inspect the input, cache hits, output, reasoning, request count, and estimated spend
+recorded during that turn in the selected history window. Model requests expand into individual
+de-duplicated usage records with their recorded or estimated prices. Local native tool activity can
+also be expanded for that turn, including names, outcomes, durations, and available input/output.
+Tools have no separate token or monetary cost in this log; their content can contribute to later
+model requests. This view does not estimate a tool's price from its duration or output length.
+
+Messages sharing a turn cannot be priced separately. Missing turn ownership or older history without
+request records appears as unattributed usage; unavailable prices remain unknown. Requests outside the
+selected period and usage belonging to separate subagent sessions are not added to a parent's turn.
+Automatic approval-review sessions can appear alongside user-created conversations because the scanner
+reads local Codex session logs. A recorded zero-dollar amount does not imply zero tokens.
 
 The browser uses the existing cost snapshot and preferred currency. Cached input is a subset of input;
 reasoning is a subset of output. Unavailable counters or prices remain unavailable rather than becoming

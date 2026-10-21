@@ -65,13 +65,72 @@ struct SessionUsagePresentationTests {
         #expect(SessionUsagePresentation.convertedCost(3, multiplier: 2) == 6)
         #expect(SessionUsagePresentation.convertedCost(.infinity, multiplier: 1) == nil)
         #expect(SessionUsagePresentation.convertedCost(3, multiplier: .infinity) == nil)
+        #expect(SessionUsagePresentation.costText(0.0001, multiplier: 1, currencyCode: "USD") == "$0.0001")
+        #expect(SessionUsagePresentation.costText(0, multiplier: 1, currencyCode: "USD") == "$0.00")
+        #expect(SessionUsagePresentation.costText(0.0000001, multiplier: 1, currencyCode: "USD") == "<$0.000001")
+    }
+
+    @Test
+    func `token and cost sorting supports both directions with unknown values last`() {
+        let sessions = [
+            Self.session(id: "unknown", total: nil, cost: nil),
+            Self.session(id: "large", total: 1000, cost: 0),
+            Self.session(id: "small", total: 10, cost: 2),
+        ]
+        for (order, ascending, expected) in [
+            (SessionUsagePresentation.Sort.tokens, false, ["large", "small", "unknown"]),
+            (.tokens, true, ["small", "large", "unknown"]),
+            (.cost, false, ["small", "large", "unknown"]),
+            (.cost, true, ["large", "small", "unknown"]),
+        ] {
+            #expect(SessionUsagePresentation.sessions(
+                sessions, matching: "", hidePersonalInfo: false, sort: order, ascending: ascending)
+                .map(\.sessionID) == expected)
+        }
+    }
+
+    @Test
+    func `sorting rejects invalid values and resolves ties by recent activity`() {
+        let sessions = [
+            Self.session(id: "invalid", total: -1, cost: .infinity),
+            Self.session(id: "old", activity: 1),
+            Self.session(id: "new", activity: 2),
+        ]
+        for order in [SessionUsagePresentation.Sort.tokens, .cost] {
+            #expect(SessionUsagePresentation.sessions(
+                sessions, matching: "", hidePersonalInfo: false, sort: order, ascending: true)
+                .map(\.sessionID) == ["new", "old", "invalid"])
+        }
+    }
+
+    @Test
+    func `tool activity uses the same reporting days and excludes the following midnight`() throws {
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.timeZone = try #require(TimeZone(identifier: "Asia/Shanghai"))
+        let now = try #require(calendar.date(from: DateComponents(year: 2026, month: 10, day: 21, hour: 15)))
+        let snapshot = CostUsageTokenSnapshot(
+            sessionTokens: nil,
+            sessionCostUSD: nil,
+            last30DaysTokens: nil,
+            last30DaysCostUSD: nil,
+            historyDays: 2,
+            daily: [],
+            updatedAt: now)
+        let range = SessionUsagePresentation.toolActivityRange(snapshot: snapshot, calendar: calendar)
+        #expect(calendar.component(.day, from: range.lowerBound) == 20)
+        #expect(calendar.component(.hour, from: range.lowerBound) == 0)
+        #expect(calendar.component(.day, from: range.upperBound) == 22)
+        #expect(range.contains(now))
+        #expect(!range.contains(range.upperBound))
     }
 
     private static func session(
         id: String,
         title: String? = nil,
         activity: TimeInterval = 1,
-        cached: Int? = 90) -> CostUsageSessionBreakdown
+        cached: Int? = 90,
+        total: Int? = 140,
+        cost: Double? = 0.02) -> CostUsageSessionBreakdown
     {
         CostUsageSessionBreakdown(
             sessionID: id,
@@ -80,9 +139,9 @@ struct SessionUsagePresentationTests {
             cachedInputTokens: cached,
             outputTokens: 20,
             reasoningTokens: 10,
-            totalTokens: 140,
+            totalTokens: total,
             requestCount: 2,
-            costUSD: 0.02,
+            costUSD: cost,
             modelBreakdowns: [],
             title: title)
     }

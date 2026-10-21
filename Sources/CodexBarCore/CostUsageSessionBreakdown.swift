@@ -19,6 +19,7 @@ public struct CostUsageSessionBreakdown: Sendable, Equatable, Identifiable {
     /// Thread name from Codex metadata, when one exists.
     public private(set) var title: String?
     public let turnPerformanceSamples: [CostUsageTurnPerformanceSample]
+    public let turns: [CostUsageSessionTurn]
     public let toolActivitySource: SessionToolActivitySource?
     /// Original rollout directory; relative SQLite homes must not use the canonical project path.
     var workingDirectory: String?
@@ -42,6 +43,7 @@ public struct CostUsageSessionBreakdown: Sendable, Equatable, Identifiable {
         projectName: String? = nil,
         title: String? = nil,
         turnPerformanceSamples: [CostUsageTurnPerformanceSample] = [],
+        turns: [CostUsageSessionTurn] = [],
         toolActivitySource: SessionToolActivitySource? = nil)
     {
         self.sessionID = sessionID
@@ -58,6 +60,7 @@ public struct CostUsageSessionBreakdown: Sendable, Equatable, Identifiable {
         self.projectName = projectName
         self.title = title
         self.turnPerformanceSamples = turnPerformanceSamples
+        self.turns = turns
         self.toolActivitySource = toolActivitySource
     }
 

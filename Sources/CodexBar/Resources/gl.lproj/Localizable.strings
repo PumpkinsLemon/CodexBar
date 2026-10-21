@@ -2705,3 +2705,14 @@
 "No matching sessions" = "Non hai sesións coincidentes";
 "Select a session" = "Selecciona unha sesión";
 "Cached input is included in input; reasoning is included in output." = "A entrada en caché está incluída na entrada; os tokens de razoamento están incluídos na saída.";
+"Recent activity" = "Actividade recente";
+"Sort by" = "Ordenar por";
+"Ascending" = "Ascendente";
+"Descending" = "Descendente";
+"Each turn includes its recorded model calls within this period. Messages sharing a turn cannot be priced separately." = "Cada quenda inclúe as solicitudes ao modelo rexistradas neste período. As mensaxes da mesma quenda non se poden valorar por separado.";
+"No turn-level usage records are available." = "Non hai rexistros de uso por quenda dispoñibles.";
+"Unattributed usage" = "Uso sen atribuír";
+"Turn %d" = "Quenda %d";
+"Model requests" = "Solicitudes ao modelo";
+"Tool activity has no separate recorded token or monetary cost." = "Non se rexistra un custo independente en tokens ou cartos para as chamadas a ferramentas.";
+"Request %d" = "Solicitude %d";

@@ -2674,3 +2674,14 @@
 "No matching sessions" = "일치하는 세션 없음";
 "Select a session" = "세션 선택";
 "Cached input is included in input; reasoning is included in output." = "캐시 입력은 입력에 포함되고 추론 토큰은 출력에 포함됩니다.";
+"Recent activity" = "최근 활동";
+"Sort by" = "정렬 기준";
+"Ascending" = "오름차순";
+"Descending" = "내림차순";
+"Each turn includes its recorded model calls within this period. Messages sharing a turn cannot be priced separately." = "각 턴에는 이 기간에 기록된 모델 요청이 포함됩니다. 같은 턴의 메시지는 별도로 비용을 계산할 수 없습니다.";
+"No turn-level usage records are available." = "턴별 사용량 기록이 없습니다.";
+"Unattributed usage" = "귀속되지 않은 사용량";
+"Turn %d" = "턴 %d";
+"Model requests" = "모델 요청";
+"Tool activity has no separate recorded token or monetary cost." = "도구 호출의 토큰 사용량이나 비용은 별도로 기록되지 않습니다.";
+"Request %d" = "요청 %d";

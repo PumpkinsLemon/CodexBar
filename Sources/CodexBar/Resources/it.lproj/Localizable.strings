@@ -2710,3 +2710,14 @@
 "No matching sessions" = "Nessuna sessione corrispondente";
 "Select a session" = "Seleziona una sessione";
 "Cached input is included in input; reasoning is included in output." = "L’input nella cache è incluso nell’input; i token di ragionamento sono inclusi nell’output.";
+"Recent activity" = "Attività recente";
+"Sort by" = "Ordina per";
+"Ascending" = "Crescente";
+"Descending" = "Decrescente";
+"Each turn includes its recorded model calls within this period. Messages sharing a turn cannot be priced separately." = "Ogni turno include le richieste al modello registrate nel periodo. I messaggi nello stesso turno non possono essere valutati separatamente.";
+"No turn-level usage records are available." = "Nessun dato di utilizzo per turno disponibile.";
+"Unattributed usage" = "Utilizzo non attribuito";
+"Turn %d" = "Turno %d";
+"Model requests" = "Richieste al modello";
+"Tool activity has no separate recorded token or monetary cost." = "Per le chiamate agli strumenti non sono registrati costi separati in token o denaro.";
+"Request %d" = "Richiesta %d";
