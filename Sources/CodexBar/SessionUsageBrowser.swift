@@ -166,7 +166,7 @@ struct SessionUsageBrowser: View {
                             .foregroundStyle(.secondary)
                             .textSelection(.enabled)
                     }
-                    Text("\(self.context.providerName) · \(L(self.context.windowLabel))")
+                    Text("\(self.context.providerName) · \(self.context.windowLabel)")
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
                     Text(self.dateText(session.lastActivity))

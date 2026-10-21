@@ -456,7 +456,8 @@ extension StatusItemController {
                 submenu?.cancelTracking()
                 let context = SessionUsageBrowserContext(
                     providerName: ProviderDescriptorRegistry.descriptor(for: provider).metadata.displayName,
-                    windowLabel: tokenSnapshot.periodLabel,
+                    windowLabel: tokenSnapshot.historyLabel.map { L($0) }
+                        ?? CostHistoryChartMenuView.windowLabel(days: max(1, tokenSnapshot.historyDays)),
                     sessions: tokenSnapshot.sessions,
                     currencyCode: displayConversion.currencyCode,
                     costMultiplier: displayConversion.multiplier,
