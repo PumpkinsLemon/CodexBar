@@ -477,12 +477,15 @@ struct CostHistoryChartMenuView: View {
                     .font(.caption2)
                     .foregroundStyle(Color(nsColor: .tertiaryLabelColor))
                 if let onBrowseSessions = self.onBrowseSessions {
-                    Button { onBrowseSessions(nil) } label: {
-                        Image(systemName: "magnifyingglass")
-                    }
-                    .buttonStyle(.plain)
-                    .help(L("Search sessions"))
-                    .accessibilityLabel(L("Search sessions"))
+                    Image(systemName: "magnifyingglass")
+                        .frame(width: 22, height: Self.detailPrimaryLineHeight)
+                        .accessibilityHidden(true)
+                        .overlay {
+                            SessionUsageMenuAction(label: L("Search sessions")) { onBrowseSessions(nil) }
+                                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                        }
+                        .help(L("Search sessions"))
+                        .accessibilityLabel(L("Search sessions"))
                 }
             }
             .frame(height: Self.detailPrimaryLineHeight, alignment: .leading)
@@ -533,6 +536,7 @@ struct CostHistoryChartMenuView: View {
                 .foregroundStyle(.secondary)
                 .lineLimit(1)
         }
+        .frame(maxWidth: .infinity, alignment: .leading)
         .frame(height: Self.sessionRowHeight, alignment: .topLeading)
         .contentShape(Rectangle())
         .help(L("Session %@", Self.shortSessionID(session.sessionID)))
@@ -540,8 +544,10 @@ struct CostHistoryChartMenuView: View {
 
         return Group {
             if let onBrowseSessions = self.onBrowseSessions {
-                Button { onBrowseSessions(session.sessionID) } label: { content }
-                    .buttonStyle(.plain)
+                content.accessibilityHidden(true).overlay {
+                    SessionUsageMenuAction(label: identity.name) { onBrowseSessions(session.sessionID) }
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                }
             } else {
                 content
             }

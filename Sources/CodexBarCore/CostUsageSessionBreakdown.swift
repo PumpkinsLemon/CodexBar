@@ -1,7 +1,8 @@
 import Foundation
 
-/// An estimated local Codex conversation total derived from one session log.
+/// A conversation total supplied by a provider's session-usage adapter.
 /// This is intentionally distinct from account-level billing or quota data.
+/// Adapters normalize cached input into input, and reasoning into output.
 public struct CostUsageSessionBreakdown: Sendable, Equatable, Identifiable {
     public let sessionID: String
     public let lastActivity: Date
@@ -18,9 +19,9 @@ public struct CostUsageSessionBreakdown: Sendable, Equatable, Identifiable {
     public internal(set) var projectName: String?
     /// Thread name from Codex metadata, when one exists.
     public private(set) var title: String?
-    public let turnPerformanceSamples: [CostUsageTurnPerformanceSample]
+    public private(set) var turnPerformanceSamples: [CostUsageTurnPerformanceSample]
     public let turns: [CostUsageSessionTurn]
-    public let toolActivitySource: SessionToolActivitySource?
+    public private(set) var toolActivitySource: SessionToolActivitySource?
     /// Original rollout directory; relative SQLite homes must not use the canonical project path.
     var workingDirectory: String?
 
@@ -67,6 +68,16 @@ public struct CostUsageSessionBreakdown: Sendable, Equatable, Identifiable {
     public func withTitle(_ title: String?) -> CostUsageSessionBreakdown {
         var copy = self
         copy.title = title
+        return copy
+    }
+
+    public func withInspectionMetadata(
+        toolActivitySource: SessionToolActivitySource?,
+        turnPerformanceSamples: [CostUsageTurnPerformanceSample]) -> CostUsageSessionBreakdown
+    {
+        var copy = self
+        copy.toolActivitySource = toolActivitySource
+        copy.turnPerformanceSamples = turnPerformanceSamples
         return copy
     }
 }

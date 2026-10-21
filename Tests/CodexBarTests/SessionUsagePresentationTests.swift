@@ -6,6 +6,25 @@ import Testing
 @MainActor
 struct SessionUsagePresentationTests {
     @Test
+    func `shared session navigation preserves another agents scope currency and selection`() throws {
+        let session = Self.session(id: "shared-agent-session", title: "Inspect a build")
+        let context = try SessionUsageBrowserContext(
+            providerName: "Claude Code",
+            windowLabel: "Synthetic reporting window",
+            sessions: [session],
+            currencyCode: "CNY",
+            costMultiplier: 2,
+            timeZone: #require(TimeZone(identifier: "Asia/Shanghai")))
+        let navigation = SessionUsageNavigation()
+        navigation.request = .init(context: context, sessionID: session.sessionID)
+        #expect(navigation.request?.context.providerName == "Claude Code")
+        #expect(navigation.request?.context.sessions == [session])
+        #expect(navigation.request?.context.currencyCode == "CNY")
+        #expect(navigation.request?.context.costMultiplier == 2)
+        #expect(navigation.request?.sessionID == session.sessionID)
+    }
+
+    @Test
     func `search finds a named conversation case insensitively without changing accounting`() {
         let session = Self.session(id: "thread-alpha", title: "Fix cache accounting")
         let original = session
