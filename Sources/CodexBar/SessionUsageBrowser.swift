@@ -9,6 +9,7 @@ struct SessionUsageBrowserContext: Sendable {
     let currencyCode: String
     let costMultiplier: Double
     let timeZone: TimeZone
+    var activityRange: Range<Date>?
 }
 
 @MainActor
@@ -50,6 +51,8 @@ struct SessionUsageBrowser: View {
     let context: SessionUsageBrowserContext
     @Bindable var settings: SettingsStore
     @State private var query = ""
+    @State private var sort = SessionUsagePresentation.Sort.activity
+    @State private var ascending = false
     @State private var selectedSessionID: String?
 
     init(context: SessionUsageBrowserContext, settings: SettingsStore, selectedSessionID: String? = nil) {
@@ -62,7 +65,9 @@ struct SessionUsageBrowser: View {
         SessionUsagePresentation.sessions(
             self.context.sessions,
             matching: self.query,
-            hidePersonalInfo: self.settings.hidePersonalInfo)
+            hidePersonalInfo: self.settings.hidePersonalInfo,
+            sort: self.sort,
+            ascending: self.ascending)
     }
 
     private var selectedSession: CostUsageSessionBreakdown? {
@@ -75,6 +80,23 @@ struct SessionUsageBrowser: View {
                 TextField(L("Search sessions"), text: self.$query)
                     .textFieldStyle(.roundedBorder)
                     .padding(12)
+                HStack {
+                    Picker(L("Sort by"), selection: self.$sort) {
+                        ForEach(SessionUsagePresentation.Sort.allCases, id: \.self) { order in
+                            Text(order.title).tag(order)
+                        }
+                    }
+                    .labelsHidden()
+                    Button { self.ascending.toggle() } label: {
+                        Image(systemName: self.ascending ? "arrow.up" : "arrow.down")
+                    }
+                    .buttonStyle(.borderless)
+                    .help(L(self.ascending ? "Ascending" : "Descending"))
+                    .accessibilityLabel(L(self.ascending ? "Ascending" : "Descending"))
+                }
+                .controlSize(.small)
+                .padding(.horizontal, 12)
+                .padding(.bottom, 8)
                 List(selection: self.$selectedSessionID) {
                     ForEach(self.sessions) { session in
                         self.sessionRow(session)
@@ -133,7 +155,7 @@ struct SessionUsageBrowser: View {
 
     private func details(_ session: CostUsageSessionBreakdown) -> some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: 22) {
+            LazyVStack(alignment: .leading, spacing: 22) {
                 VStack(alignment: .leading, spacing: 6) {
                     Text(self.identity(session).name)
                         .font(.title2.weight(.semibold))
@@ -184,6 +206,21 @@ struct SessionUsageBrowser: View {
                     .font(.caption)
                     .foregroundStyle(.secondary)
 
+                Divider()
+                Text(L("spend_performance_turns")).font(.headline)
+                Text(L("Each turn includes its recorded model calls within this period. " +
+                        "Messages sharing a turn cannot be priced separately."))
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                if session.turns.isEmpty {
+                    Text(L("No turn-level usage records are available."))
+                        .font(.callout)
+                        .foregroundStyle(.secondary)
+                }
+                ForEach(Array(session.turns.enumerated()), id: \.element.id) { index, turn in
+                    self.turnRow(turn, index: index, session: session)
+                }
+
                 if !session.modelBreakdowns.isEmpty {
                     Divider()
                     Text(L("Models")).font(.headline)
@@ -210,6 +247,85 @@ struct SessionUsageBrowser: View {
         }
     }
 
+    private func turnRow(_ turn: CostUsageSessionTurn, index: Int, session: CostUsageSessionBreakdown) -> some View {
+        DisclosureGroup {
+            Grid(alignment: .leading, horizontalSpacing: 24, verticalSpacing: 12) {
+                GridRow {
+                    self.metric(L("Input"), value: self.tokenText(turn.inputTokens))
+                    self.metric(L("Cached input"), value: self.tokenText(turn.cachedInputTokens))
+                }
+                GridRow {
+                    self.metric(L("Output"), value: self.tokenText(turn.outputTokens))
+                    self.metric(L("Reasoning"), value: self.tokenText(turn.reasoningTokens))
+                }
+                GridRow {
+                    self.metric(L("Requests"), value: self.tokenText(turn.requestCount))
+                    self.metric(L("Estimated spend"), value: self.costText(turn.costUSD))
+                }
+            }
+            .padding(.vertical, 10)
+            if !turn.requests.isEmpty {
+                DisclosureGroup(L("Model requests")) {
+                    LazyVStack(alignment: .leading, spacing: 12) {
+                        ForEach(Array(turn.requests.enumerated()), id: \.element.id) { index, request in
+                            self.requestRow(request, index: index)
+                        }
+                    }
+                    .padding(.vertical, 8)
+                }
+            }
+            if let source = session.toolActivitySource, let range = self.context.activityRange,
+               let turnID = turn.turnID
+            {
+                SpendSessionToolActivityView(
+                    source: source,
+                    lastActivity: session.lastActivity,
+                    range: range,
+                    timeZone: self.context.timeZone,
+                    hidePersonalInfo: self.settings.hidePersonalInfo,
+                    turnID: turnID)
+                Text(L("Tool activity has no separate recorded token or monetary cost."))
+                    .font(.caption2).foregroundStyle(.secondary)
+            }
+        } label: {
+            HStack(alignment: .top, spacing: 12) {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(turn.turnID == nil ? L("Unattributed usage") : L("Turn %d", index + 1))
+                    if let date = turn.firstActivity {
+                        Text(self.dateText(date)).font(.caption).foregroundStyle(.secondary)
+                    }
+                }
+                Spacer(minLength: 8)
+                Text(self.tokenText(turn.totalTokens)).foregroundStyle(.secondary)
+                Text(self.costText(turn.costUSD)).monospacedDigit()
+            }
+        }
+    }
+
+    private func requestRow(_ request: CostUsageSessionRequest, index: Int) -> some View {
+        VStack(alignment: .leading, spacing: 5) {
+            HStack(alignment: .top) {
+                Text(L("Request %d", index + 1) + " · " + UsageFormatter.modelDisplayName(request.modelName))
+                Spacer(minLength: 8)
+                Text(self.costText(request.costUSD)).monospacedDigit()
+            }
+            Text(L(
+                "Input %@ · cached %@ · output %@",
+                self.tokenText(request.inputTokens),
+                self.tokenText(request.cachedInputTokens),
+                self.tokenText(request.outputTokens)))
+                .foregroundStyle(.secondary)
+            HStack {
+                if let date = request.timestamp { Text(self.dateText(date, seconds: true)) }
+                Spacer(minLength: 8)
+                Text(L("Reasoning") + ": " + self.tokenText(request.reasoningTokens))
+            }
+            .font(.caption2).foregroundStyle(.secondary)
+        }
+        .font(.caption)
+        .textSelection(.enabled)
+    }
+
     private func metric(_ title: String, value: String) -> some View {
         VStack(alignment: .leading, spacing: 5) {
             Text(title).font(.caption).foregroundStyle(.secondary)
@@ -229,12 +345,13 @@ struct SessionUsageBrowser: View {
     }
 
     private func costText(_ value: Double?) -> String {
-        SessionUsagePresentation.convertedCost(value, multiplier: self.context.costMultiplier)
-            .map { UsageFormatter.currencyString($0, currencyCode: self.context.currencyCode) } ?? "—"
+        SessionUsagePresentation.costText(
+            value, multiplier: self.context.costMultiplier, currencyCode: self.context.currencyCode)
     }
 
-    private func dateText(_ date: Date) -> String {
+    private func dateText(_ date: Date, seconds: Bool = false) -> String {
         var format = Date.FormatStyle.dateTime.year().month().day().hour().minute()
+        if seconds { format = format.second() }
         format.locale = codexBarLocalizedLocale()
         format.timeZone = self.context.timeZone
         return date.formatted(format)

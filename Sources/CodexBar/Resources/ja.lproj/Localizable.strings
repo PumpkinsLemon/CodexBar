@@ -2706,3 +2706,14 @@
 "No matching sessions" = "一致するセッションがありません";
 "Select a session" = "セッションを選択";
 "Cached input is included in input; reasoning is included in output." = "キャッシュ入力は入力に、推論トークンは出力に含まれます。";
+"Recent activity" = "最近のアクティビティ";
+"Sort by" = "並べ替え";
+"Ascending" = "昇順";
+"Descending" = "降順";
+"Each turn includes its recorded model calls within this period. Messages sharing a turn cannot be priced separately." = "各ターンには、この期間に記録されたモデルリクエストが含まれます。同じターン内のメッセージを個別に料金計算することはできません。";
+"No turn-level usage records are available." = "ターン単位の使用量記録はありません。";
+"Unattributed usage" = "未割り当ての使用量";
+"Turn %d" = "ターン %d";
+"Model requests" = "モデルリクエスト";
+"Tool activity has no separate recorded token or monetary cost." = "ツール呼び出しのトークン数や料金は個別には記録されていません。";
+"Request %d" = "リクエスト %d";
