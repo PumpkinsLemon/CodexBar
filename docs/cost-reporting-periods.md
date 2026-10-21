@@ -2,9 +2,14 @@
 
 ## Conversation usage details
 
-In the Codex cost submenu, click a conversation to inspect its input, cached input, uncached input, output,
+In a cost submenu with session records, click a conversation to open the shared Sessions inspector in
+Usage & Spend and inspect its input, cached input, uncached input, output,
 reasoning, requests, estimated cost, and per-model breakdown. The search icon next to Conversations opens
-the same browser for all conversations retained in that menu's current account and history window.
+the same inspector for all conversations retained in that menu's current account and history window.
+The Sessions section in Usage & Spend reuses this component and selects providers/accounts separately;
+identical session IDs from different sources remain isolated. Sources provide `CostUsageSessionBreakdown`
+records with normalized token buckets; absent session data, turn records, and prices stay unavailable.
+A provider appearing in the app does not by itself mean its backend supplies session records.
 Search matches conversation names or IDs. Sort by recent activity, token count, or cost in either
 direction; unknown values stay last.
 
@@ -18,15 +23,17 @@ model requests. This view does not estimate a tool's price from its duration or 
 Messages sharing a turn cannot be priced separately. Missing turn ownership or older history without
 request records appears as unattributed usage; unavailable prices remain unknown. Requests outside the
 selected period and usage belonging to separate subagent sessions are not added to a parent's turn.
-Automatic approval-review sessions can appear alongside user-created conversations because the scanner
-reads local Codex session logs. A recorded zero-dollar amount does not imply zero tokens.
+For the Codex adapter, automatic approval-review sessions can appear alongside user-created
+conversations because its scanner reads local Codex session logs. A recorded zero-dollar amount does not imply zero tokens.
 
-The browser uses the existing cost snapshot and preferred currency. Cached input is a subset of input;
+The inspector uses the existing cost snapshot and preferred currency. Cached input is a subset of input;
 reasoning is a subset of output. Unavailable counters or prices remain unavailable rather than becoming
 zero. Hide personal information also masks the browser's names and prevents search from revealing them.
 
 Synthetic-data previews: [conversation details](screenshots/session-usage-browser-synthetic.png) and
-[privacy mode](screenshots/session-usage-browser-private-synthetic.png).
+[privacy mode](screenshots/session-usage-browser-private-synthetic.png), and
+[shared narrow layout](screenshots/session-usage-browser-shared-narrow-synthetic.png).
+These component previews use synthetic data and do not establish that each pictured provider has a session parser.
 
 ## History windows
 

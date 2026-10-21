@@ -1,5 +1,6 @@
 import AppKit
 import CodexBarCore
+import Observation
 import SwiftUI
 
 struct SessionUsageBrowserContext: Sendable {
@@ -12,52 +13,32 @@ struct SessionUsageBrowserContext: Sendable {
     var activityRange: Range<Date>?
 }
 
+/// Menu navigation carries the exact account snapshot into the existing Usage & Spend pane.
 @MainActor
-final class SessionUsagePresenter {
-    static let shared = SessionUsagePresenter()
-    private var windowController: NSWindowController?
-
-    func present(context: SessionUsageBrowserContext, settings: SettingsStore, sessionID: String?) {
-        let controller: NSWindowController
-        if let existing = self.windowController {
-            controller = existing
-        } else {
-            let window = NSWindow(
-                contentRect: NSRect(x: 0, y: 0, width: 940, height: 660),
-                styleMask: [.titled, .closable, .miniaturizable, .resizable],
-                backing: .buffered,
-                defer: false)
-            window.isReleasedWhenClosed = false
-            window.tabbingMode = .disallowed
-            window.contentMinSize = NSSize(width: 780, height: 520)
-            window.center()
-            controller = NSWindowController(window: window)
-            self.windowController = controller
-        }
-        controller.window?.title = "\(L("Sessions")) · \(context.providerName)"
-        controller.window?.contentViewController = NSHostingController(rootView: SessionUsageBrowser(
-            context: context,
-            settings: settings,
-            selectedSessionID: sessionID).codexBarLocalized())
-        NSApp.activate()
-        controller.showWindow(nil)
-        controller.window?.deminiaturize(nil)
-        controller.window?.makeKeyAndOrderFront(nil)
+@Observable
+final class SessionUsageNavigation {
+    static let shared = SessionUsageNavigation()
+    struct Request: Identifiable, Sendable {
+        let id = UUID()
+        let context: SessionUsageBrowserContext
+        let sessionID: String?
     }
+
+    var request: Request?
 }
 
 @MainActor
 struct SessionUsageBrowser: View {
     let context: SessionUsageBrowserContext
-    @Bindable var settings: SettingsStore
+    let hidePersonalInfo: Bool
     @State private var query = ""
     @State private var sort = SessionUsagePresentation.Sort.activity
     @State private var ascending = false
     @State private var selectedSessionID: String?
 
-    init(context: SessionUsageBrowserContext, settings: SettingsStore, selectedSessionID: String? = nil) {
+    init(context: SessionUsageBrowserContext, hidePersonalInfo: Bool, selectedSessionID: String? = nil) {
         self.context = context
-        self.settings = settings
+        self.hidePersonalInfo = hidePersonalInfo
         self._selectedSessionID = State(initialValue: selectedSessionID)
     }
 
@@ -65,7 +46,7 @@ struct SessionUsageBrowser: View {
         SessionUsagePresentation.sessions(
             self.context.sessions,
             matching: self.query,
-            hidePersonalInfo: self.settings.hidePersonalInfo,
+            hidePersonalInfo: self.hidePersonalInfo,
             sort: self.sort,
             ascending: self.ascending)
     }
@@ -75,50 +56,19 @@ struct SessionUsageBrowser: View {
     }
 
     var body: some View {
-        HSplitView {
-            VStack(spacing: 0) {
-                TextField(L("Search sessions"), text: self.$query)
-                    .textFieldStyle(.roundedBorder)
-                    .padding(12)
-                HStack {
-                    Picker(L("Sort by"), selection: self.$sort) {
-                        ForEach(SessionUsagePresentation.Sort.allCases, id: \.self) { order in
-                            Text(order.title).tag(order)
-                        }
-                    }
-                    .labelsHidden()
-                    Button { self.ascending.toggle() } label: {
-                        Image(systemName: self.ascending ? "arrow.up" : "arrow.down")
-                    }
-                    .buttonStyle(.borderless)
-                    .help(L(self.ascending ? "Ascending" : "Descending"))
-                    .accessibilityLabel(L(self.ascending ? "Ascending" : "Descending"))
+        GeometryReader { geometry in
+            if geometry.size.width < 600 {
+                VStack(spacing: 0) {
+                    self.sessionList.frame(height: 190)
+                    Divider()
+                    self.detailPane
                 }
-                .controlSize(.small)
-                .padding(.horizontal, 12)
-                .padding(.bottom, 8)
-                List(selection: self.$selectedSessionID) {
-                    ForEach(self.sessions) { session in
-                        self.sessionRow(session)
-                            .tag(session.sessionID)
-                    }
-                }
-                .overlay {
-                    if self.sessions.isEmpty {
-                        ContentUnavailableView(L("No matching sessions"), systemImage: "magnifyingglass")
-                    }
+            } else {
+                HSplitView {
+                    self.sessionList.frame(minWidth: 180, idealWidth: 220, maxWidth: 300)
+                    self.detailPane.frame(minWidth: 320)
                 }
             }
-            .frame(minWidth: 260, idealWidth: 320, maxWidth: 400)
-
-            Group {
-                if let session = self.selectedSession {
-                    self.details(session)
-                } else {
-                    ContentUnavailableView(L("Select a session"), systemImage: "text.bubble")
-                }
-            }
-            .frame(minWidth: 450, maxWidth: .infinity, maxHeight: .infinity)
         }
         .onAppear {
             if self.selectedSessionID == nil { self.selectedSessionID = self.sessions.first?.sessionID }
@@ -126,10 +76,57 @@ struct SessionUsageBrowser: View {
         .onChange(of: self.sessions.map(\.sessionID)) { _, ids in
             if !ids.contains(self.selectedSessionID ?? "") { self.selectedSessionID = ids.first }
         }
-        .onChange(of: self.settings.hidePersonalInfo) { _, _ in
+        .onChange(of: self.hidePersonalInfo) { _, _ in
             self.query = ""
         }
         .environment(\.timeZone, self.context.timeZone)
+    }
+
+    private var sessionList: some View {
+        VStack(spacing: 0) {
+            TextField(L("Search sessions"), text: self.$query)
+                .textFieldStyle(.roundedBorder)
+                .padding(12)
+            HStack {
+                Picker(L("Sort by"), selection: self.$sort) {
+                    ForEach(SessionUsagePresentation.Sort.allCases, id: \.self) { order in
+                        Text(order.title).tag(order)
+                    }
+                }
+                .labelsHidden()
+                Button { self.ascending.toggle() } label: {
+                    Image(systemName: self.ascending ? "arrow.up" : "arrow.down")
+                }
+                .buttonStyle(.borderless)
+                .help(L(self.ascending ? "Ascending" : "Descending"))
+                .accessibilityLabel(L(self.ascending ? "Ascending" : "Descending"))
+            }
+            .controlSize(.small)
+            .padding(.horizontal, 12)
+            .padding(.bottom, 8)
+            List(selection: self.$selectedSessionID) {
+                ForEach(self.sessions) { session in
+                    self.sessionRow(session)
+                        .tag(session.sessionID)
+                }
+            }
+            .overlay {
+                if self.sessions.isEmpty {
+                    ContentUnavailableView(L("No matching sessions"), systemImage: "magnifyingglass")
+                }
+            }
+        }
+    }
+
+    private var detailPane: some View {
+        Group {
+            if let session = self.selectedSession {
+                self.details(session)
+            } else {
+                ContentUnavailableView(L("Select a session"), systemImage: "text.bubble")
+            }
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 
     private func sessionRow(_ session: CostUsageSessionBreakdown) -> some View {
@@ -160,7 +157,7 @@ struct SessionUsageBrowser: View {
                     Text(self.identity(session).name)
                         .font(.title2.weight(.semibold))
                         .textSelection(.enabled)
-                    if !self.settings.hidePersonalInfo {
+                    if !self.hidePersonalInfo {
                         Text(session.sessionID)
                             .font(.caption.monospaced())
                             .foregroundStyle(.secondary)
@@ -172,7 +169,7 @@ struct SessionUsageBrowser: View {
                     Text(self.dateText(session.lastActivity))
                         .font(.caption)
                         .foregroundStyle(.secondary)
-                    if self.settings.hidePersonalInfo {
+                    if self.hidePersonalInfo {
                         Label(L("hide_personal_info_title"), systemImage: "eye.slash")
                             .font(.caption)
                             .foregroundStyle(.secondary)
@@ -202,9 +199,12 @@ struct SessionUsageBrowser: View {
                 Text(L("Cached input is included in input; reasoning is included in output."))
                     .font(.caption)
                     .foregroundStyle(.secondary)
-                Text(L("codex_api_estimate_hint"))
+                Text(L(UsageFormatter.costEstimateHint))
                     .font(.caption)
                     .foregroundStyle(.secondary)
+                if let performance = CostUsageTurnPerformanceSummary(samples: session.turnPerformanceSamples) {
+                    SpendSessionPerformanceView(summary: performance)
+                }
 
                 Divider()
                 Text(L("spend_performance_turns")).font(.headline)
@@ -282,7 +282,7 @@ struct SessionUsageBrowser: View {
                     lastActivity: session.lastActivity,
                     range: range,
                     timeZone: self.context.timeZone,
-                    hidePersonalInfo: self.settings.hidePersonalInfo,
+                    hidePersonalInfo: self.hidePersonalInfo,
                     turnID: turnID)
                 Text(L("Tool activity has no separate recorded token or monetary cost."))
                     .font(.caption2).foregroundStyle(.secondary)
@@ -336,7 +336,7 @@ struct SessionUsageBrowser: View {
 
     private func identity(_ session: CostUsageSessionBreakdown) -> CostHistoryIdentity {
         CostHistoryIdentity(
-            sessionID: session.sessionID, title: session.title, hidePersonalInfo: self.settings.hidePersonalInfo)
+            sessionID: session.sessionID, title: session.title, hidePersonalInfo: self.hidePersonalInfo)
     }
 
     private func tokenText(_ value: Int?) -> String {

@@ -5,6 +5,26 @@ import Testing
 
 struct SpendDashboardSessionRowTests {
     @Test
+    func `different agents preserve independent source identities and shared inspection data`() throws {
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.timeZone = try #require(TimeZone(identifier: "Asia/Shanghai"))
+        let snapshot = Self.sessionInput(sessions: [Self.session(id: "same-id", cost: 1, tokens: 10)]).snapshot
+        let model = SpendDashboardModel.build(
+            inputs: [
+                .init(id: "claude-account", provider: .claude, displayName: "Claude", snapshot: snapshot),
+                .init(id: "codex-account", provider: .codex, displayName: "Codex", snapshot: snapshot),
+            ],
+            requestedDays: 90,
+            now: Self.now,
+            calendar: calendar)
+        let rows = try #require(model.groups.first?.sessions)
+        #expect(rows.count == 2)
+        #expect(Set(rows.map(\.id)).count == 2)
+        #expect(Set(rows.map(\.sourceID)) == ["claude-account", "codex-account"])
+        #expect(rows.allSatisfy { $0.usage?.sessionID == "same-id" && $0.usage?.totalTokens == 10 })
+    }
+
+    @Test
     func `sessions rank by cost and carry thread names and projects`() throws {
         var calendar = Calendar(identifier: .gregorian)
         calendar.timeZone = try #require(TimeZone(secondsFromGMT: 0))
@@ -34,10 +54,10 @@ struct SpendDashboardSessionRowTests {
     }
 
     @Test
-    func `sessions keep the most expensive rows up to the display limit`() throws {
+    func `sessions retain every row so search can find inexpensive conversations`() throws {
         var calendar = Calendar(identifier: .gregorian)
         calendar.timeZone = try #require(TimeZone(secondsFromGMT: 0))
-        let count = SpendDashboardModel.sessionRowLimit + 5
+        let count = 55
         let sessions = (1...count).map { Self.session(id: "s\($0)", cost: Double($0), tokens: $0) }
         let model = SpendDashboardModel.build(
             inputs: [Self.sessionInput(sessions: sessions)],
@@ -46,9 +66,10 @@ struct SpendDashboardSessionRowTests {
             calendar: calendar)
 
         let rows = try #require(model.groups.first?.sessions)
-        #expect(rows.count == SpendDashboardModel.sessionRowLimit)
+        #expect(rows.count == count)
         #expect(rows.first?.sessionID == "s\(count)")
-        #expect(rows.last?.sessionID == "s6")
+        #expect(rows.last?.sessionID == "s1")
+        #expect(rows.last?.usage?.sessionID == "s1")
     }
 
     @Test

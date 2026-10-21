@@ -448,12 +448,11 @@ extension StatusItemController {
             historyCoverageIsEstablished: tokenSnapshot.historyCoverageIsEstablished,
             windowLabel: tokenSnapshot.historyLabel,
             projects: provider == .codex ? tokenSnapshot.projects : [],
-            sessions: provider == .codex ? tokenSnapshot.sessions : [],
+            sessions: tokenSnapshot.sessions,
             hidePersonalInfo: self.settings.hidePersonalInfo,
             width: width,
             onBrowseSessions: { [weak self, weak submenu] sessionID in
                 guard let self else { return }
-                submenu?.cancelTracking()
                 let context = SessionUsageBrowserContext(
                     providerName: ProviderDescriptorRegistry.descriptor(for: provider).metadata.displayName,
                     windowLabel: tokenSnapshot.historyLabel.map { L($0) }
@@ -464,11 +463,9 @@ extension StatusItemController {
                     timeZone: self.settings.costUsageBucketCalendar.timeZone,
                     activityRange: SessionUsagePresentation.toolActivityRange(
                         snapshot: tokenSnapshot, calendar: self.settings.costUsageBucketCalendar))
-                DispatchQueue.main.async {
-                    SessionUsagePresenter.shared.present(
-                        context: context,
-                        settings: self.settings,
-                        sessionID: sessionID)
+                performAfterClosingSessionMenu(submenu) {
+                    SessionUsageNavigation.shared.request = .init(context: context, sessionID: sessionID)
+                    self.settingsOpenHandler?(.usageSpend)
                 }
             })
         let hosting = MenuHostingView(rootView: chartView.codexBarLocalized())

@@ -364,6 +364,9 @@ struct SpendDashboardModel: Equatable, Sendable {
         let modelName: String?
         var turnPerformance: CostUsageTurnPerformanceSummary?
         var toolActivitySource: SessionToolActivitySource?
+        var usage: CostUsageSessionBreakdown?
+        var sourceName: String?
+        var costMultiplier: Double = 1
     }
 
     struct HourlyPoint: Identifiable, Equatable, Sendable {
@@ -1530,18 +1533,22 @@ struct SpendDashboardModel: Equatable, Sendable {
                     turnPerformance: CostUsageTurnPerformanceSummary(samples: performanceSamples),
                     // Provider-specific by design: Only native Codex logs supply owned item_completed tool records.
                     toolActivitySource: summary.input.provider == .codex && summary.input.sourceKind == .native
-                        ? session.toolActivitySource : nil)
+                        ? session.toolActivitySource : nil,
+                    usage: session.withInspectionMetadata(
+                        toolActivitySource: summary.input.provider == .codex && summary.input.sourceKind == .native
+                            ? session.toolActivitySource : nil,
+                        turnPerformanceSamples: performanceSamples),
+                    sourceName: summary.input.displayName,
+                    costMultiplier: summary.costMultiplier)
             }
         }
         .sorted(by: Self.sessionOrder)
-        return rows.prefix(Self.sessionRowLimit).enumerated().map { rank, row in
+        return rows.enumerated().map { rank, row in
             var ranked = row
             ranked.rank = rank + 1
             return ranked
         }
     }
-
-    static let sessionRowLimit = 50
 
     /// Most expensive first, like Projects. Unpriced sessions follow priced ones.
     private static func sessionOrder(_ lhs: SessionRow, _ rhs: SessionRow) -> Bool {
