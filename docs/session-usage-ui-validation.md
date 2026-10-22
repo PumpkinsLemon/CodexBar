@@ -56,5 +56,5 @@ The shortcut was removed after the attempt.
 
 Native event-handler tests use controlled event-tracker input. They do not prove
 OS event delivery, full-row clicks, drag-out cancellation, or menu dismissal in
-the installed application. Keep these paths pending and retain the draft until
-the remaining behavior proof and maintainer feature approval are resolved.
+the installed application. Keep these paths pending; the remaining behavior
+proof and maintainer feature approval are still required before merging.
