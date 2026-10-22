@@ -143,13 +143,113 @@ struct SessionUsagePresentationTests {
         #expect(!range.contains(range.upperBound))
     }
 
+    @Test
+    func `performance only session retains unfiltered native tool activity`() throws {
+        let activity = Date(timeIntervalSince1970: 1)
+        let sample = try #require(CostUsageTurnPerformanceSample(
+            completedAt: activity, outputTokens: 10, durationMilliseconds: 1000))
+        let session = CostUsageSessionBreakdown(
+            sessionID: Self.toolSource.sessionID,
+            lastActivity: activity,
+            inputTokens: nil,
+            cachedInputTokens: nil,
+            outputTokens: nil,
+            totalTokens: nil,
+            requestCount: nil,
+            costUSD: nil,
+            modelBreakdowns: [],
+            turnPerformanceSamples: [sample],
+            toolActivitySource: Self.toolSource)
+        let browser = try Self.toolBrowser(session)
+        let view = try #require(browser.toolActivityView(for: session))
+        #expect(view.source == Self.toolSource)
+        #expect(view.turnID == nil)
+        #expect(view.range == browser.context.activityRange)
+        #expect(view.timeZone.identifier == "Asia/Shanghai")
+        #expect(view.hidePersonalInfo)
+        #expect(view.lastActivity == activity)
+        #expect(session.totalTokens == nil)
+        #expect(session.costUSD == nil)
+    }
+
+    @Test
+    func `unattributed usage keeps native operations accessible at session scope`() throws {
+        let session = Self.session(
+            id: Self.toolSource.sessionID,
+            turns: [Self.toolTurn(nil)],
+            toolActivitySource: Self.toolSource)
+        let browser = try Self.toolBrowser(session)
+        let view = try #require(browser.toolActivityView(for: session))
+        #expect(view.source == Self.toolSource)
+        #expect(view.turnID == nil)
+        #expect(view.range == browser.context.activityRange)
+    }
+
+    @Test
+    func `attributed sessions retain scoped tool lists without a duplicate fallback`() throws {
+        for turns in [[Self.toolTurn("native-turn")], [Self.toolTurn(nil), Self.toolTurn("native-turn")]] {
+            let session = Self.session(
+                id: Self.toolSource.sessionID, turns: turns, toolActivitySource: Self.toolSource)
+            let browser = try Self.toolBrowser(session)
+            #expect(browser.toolActivityView(for: session) == nil)
+            let view = try #require(browser.toolActivityView(for: session, turnID: "native-turn"))
+            #expect(view.source == Self.toolSource)
+            #expect(view.turnID == "native-turn")
+            #expect(view.range == browser.context.activityRange)
+        }
+    }
+
+    @Test
+    func `tool fallback requires a supplied source and reporting range`() throws {
+        let withoutSource = Self.session(id: Self.toolSource.sessionID)
+        #expect(try Self.toolBrowser(withoutSource).toolActivityView(for: withoutSource) == nil)
+        let withSource = Self.session(id: Self.toolSource.sessionID, toolActivitySource: Self.toolSource)
+        let withoutRange = try Self.toolBrowser(withSource, range: nil)
+        #expect(withoutRange.toolActivityView(for: withSource) == nil)
+    }
+
+    private static let toolSource = SessionToolActivitySource(
+        fileURL: URL(fileURLWithPath: "/synthetic/rollout.jsonl"), sessionID: "tool-session")
+
+    private static func toolTurn(_ id: String?) -> CostUsageSessionTurn {
+        CostUsageSessionTurn(
+            turnID: id,
+            firstActivity: nil,
+            lastActivity: nil,
+            inputTokens: 120,
+            cachedInputTokens: 90,
+            outputTokens: 20,
+            reasoningTokens: 10,
+            totalTokens: 140,
+            requestCount: 2,
+            costUSD: 0.02)
+    }
+
+    private static func toolBrowser(
+        _ session: CostUsageSessionBreakdown,
+        range: Range<Date>? = Date(timeIntervalSince1970: 0)..<Date(timeIntervalSince1970: 10)) throws
+        -> SessionUsageBrowser
+    {
+        let context = try SessionUsageBrowserContext(
+            providerName: "Synthetic agent",
+            windowLabel: "Synthetic reporting window",
+            sessions: [session],
+            currencyCode: "USD",
+            costMultiplier: 1,
+            timeZone: #require(TimeZone(identifier: "Asia/Shanghai")),
+            activityRange: range)
+        return SessionUsageBrowser(context: context, hidePersonalInfo: true)
+    }
+
     private static func session(
         id: String,
         title: String? = nil,
         activity: TimeInterval = 1,
         cached: Int? = 90,
         total: Int? = 140,
-        cost: Double? = 0.02) -> CostUsageSessionBreakdown
+        cost: Double? = 0.02,
+        turns: [CostUsageSessionTurn] = [],
+        toolActivitySource: SessionToolActivitySource? = nil) -> CostUsageSessionBreakdown
     {
         CostUsageSessionBreakdown(
             sessionID: id,
@@ -162,6 +262,8 @@ struct SessionUsagePresentationTests {
             requestCount: 2,
             costUSD: cost,
             modelBreakdowns: [],
-            title: title)
+            title: title,
+            turns: turns,
+            toolActivitySource: toolActivitySource)
     }
 }

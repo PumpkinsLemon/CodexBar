@@ -221,6 +221,13 @@ struct SessionUsageBrowser: View {
                     self.turnRow(turn, index: index, session: session)
                 }
 
+                if let activity = self.toolActivityView(for: session) {
+                    Divider()
+                    activity
+                    Text(L("Tool activity has no separate recorded token or monetary cost."))
+                        .font(.caption2).foregroundStyle(.secondary)
+                }
+
                 if !session.modelBreakdowns.isEmpty {
                     Divider()
                     Text(L("Models")).font(.headline)
@@ -245,6 +252,22 @@ struct SessionUsageBrowser: View {
             .padding(24)
             .frame(maxWidth: .infinity, alignment: .leading)
         }
+    }
+
+    func toolActivityView(
+        for session: CostUsageSessionBreakdown,
+        turnID: String? = nil) -> SpendSessionToolActivityView?
+    {
+        guard let source = session.toolActivitySource, let range = self.context.activityRange else { return nil }
+        // Without attributed usage turns, keep native activity reachable at the session level.
+        guard turnID != nil || !session.turns.contains(where: { $0.turnID != nil }) else { return nil }
+        return SpendSessionToolActivityView(
+            source: source,
+            lastActivity: session.lastActivity,
+            range: range,
+            timeZone: self.context.timeZone,
+            hidePersonalInfo: self.hidePersonalInfo,
+            turnID: turnID)
     }
 
     private func turnRow(_ turn: CostUsageSessionTurn, index: Int, session: CostUsageSessionBreakdown) -> some View {
@@ -274,16 +297,10 @@ struct SessionUsageBrowser: View {
                     .padding(.vertical, 8)
                 }
             }
-            if let source = session.toolActivitySource, let range = self.context.activityRange,
-               let turnID = turn.turnID
+            if let turnID = turn.turnID,
+               let activity = self.toolActivityView(for: session, turnID: turnID)
             {
-                SpendSessionToolActivityView(
-                    source: source,
-                    lastActivity: session.lastActivity,
-                    range: range,
-                    timeZone: self.context.timeZone,
-                    hidePersonalInfo: self.hidePersonalInfo,
-                    turnID: turnID)
+                activity
                 Text(L("Tool activity has no separate recorded token or monetary cost."))
                     .font(.caption2).foregroundStyle(.secondary)
             }
