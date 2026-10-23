@@ -1,29 +1,10 @@
-import CodexBarCore
 import Foundation
 import Testing
 @testable import CodexBar
+@testable import CodexBarCore
 
 @MainActor
 struct SessionUsagePresentationTests {
-    @Test
-    func `shared session navigation preserves another agents scope currency and selection`() throws {
-        let session = Self.session(id: "shared-agent-session", title: "Inspect a build")
-        let context = try SessionUsageBrowserContext(
-            providerName: "Claude Code",
-            windowLabel: "Synthetic reporting window",
-            sessions: [session],
-            currencyCode: "CNY",
-            costMultiplier: 2,
-            timeZone: #require(TimeZone(identifier: "Asia/Shanghai")))
-        let navigation = SessionUsageNavigation()
-        navigation.request = .init(context: context, sessionID: session.sessionID)
-        #expect(navigation.request?.context.providerName == "Claude Code")
-        #expect(navigation.request?.context.sessions == [session])
-        #expect(navigation.request?.context.currencyCode == "CNY")
-        #expect(navigation.request?.context.costMultiplier == 2)
-        #expect(navigation.request?.sessionID == session.sessionID)
-    }
-
     @Test
     func `search finds a named conversation case insensitively without changing accounting`() {
         let session = Self.session(id: "thread-alpha", title: "Fix cache accounting")
@@ -37,9 +18,13 @@ struct SessionUsagePresentationTests {
     func `search keeps IDs available but cannot reveal hidden conversation names`() {
         let session = Self.session(id: "thread-alpha", title: "Confidential customer incident")
         #expect(SessionUsagePresentation.sessions(
-            [session], matching: "customer", hidePersonalInfo: true).isEmpty)
+            [session],
+            matching: "customer",
+            hidePersonalInfo: true).isEmpty)
         #expect(SessionUsagePresentation.sessions(
-            [session], matching: "ALPHA", hidePersonalInfo: true) == [session])
+            [session],
+            matching: "ALPHA",
+            hidePersonalInfo: true) == [session])
     }
 
     @Test
@@ -47,7 +32,9 @@ struct SessionUsagePresentationTests {
         let sessions = (0..<120).map { Self.session(id: "thread-\($0)", title: "Conversation \($0)") }
         #expect(SessionUsagePresentation.sessions(sessions, matching: "", hidePersonalInfo: false).count == 120)
         #expect(SessionUsagePresentation.sessions(
-            sessions, matching: "Conversation 119", hidePersonalInfo: false).map(\.sessionID) == ["thread-119"])
+            sessions,
+            matching: "Conversation 119",
+            hidePersonalInfo: false).map(\.sessionID) == ["thread-119"])
     }
 
     @Test
@@ -56,7 +43,9 @@ struct SessionUsagePresentationTests {
         let latestB = Self.session(id: "b", activity: 2)
         let latestA = Self.session(id: "a", activity: 2)
         #expect(SessionUsagePresentation.sessions(
-            [oldest, latestB, latestA], matching: "", hidePersonalInfo: false).map(\.sessionID) == ["a", "b", "old"])
+            [oldest, latestB, latestA],
+            matching: "",
+            hidePersonalInfo: false).map(\.sessionID) == ["a", "b", "old"])
     }
 
     @Test
@@ -103,7 +92,11 @@ struct SessionUsagePresentationTests {
             (.cost, true, ["large", "small", "unknown"]),
         ] {
             #expect(SessionUsagePresentation.sessions(
-                sessions, matching: "", hidePersonalInfo: false, sort: order, ascending: ascending)
+                sessions,
+                matching: "",
+                hidePersonalInfo: false,
+                sort: order,
+                ascending: ascending)
                 .map(\.sessionID) == expected)
         }
     }
@@ -117,7 +110,11 @@ struct SessionUsagePresentationTests {
         ]
         for order in [SessionUsagePresentation.Sort.tokens, .cost] {
             #expect(SessionUsagePresentation.sessions(
-                sessions, matching: "", hidePersonalInfo: false, sort: order, ascending: true)
+                sessions,
+                matching: "",
+                hidePersonalInfo: false,
+                sort: order,
+                ascending: true)
                 .map(\.sessionID) == ["new", "old", "invalid"])
         }
     }
@@ -143,13 +140,145 @@ struct SessionUsagePresentationTests {
         #expect(!range.contains(range.upperBound))
     }
 
+    @Test
+    func `performance only session retains unfiltered native tool activity`() throws {
+        let activity = Date(timeIntervalSince1970: 1)
+        let sample = try #require(CostUsageTurnPerformanceSample(
+            completedAt: activity,
+            outputTokens: 10,
+            durationMilliseconds: 1000))
+        let session = CostUsageSessionBreakdown(
+            sessionID: Self.toolSource.sessionID,
+            lastActivity: activity,
+            inputTokens: nil,
+            cachedInputTokens: nil,
+            outputTokens: nil,
+            totalTokens: nil,
+            requestCount: nil,
+            costUSD: nil,
+            modelBreakdowns: [],
+            turnPerformanceSamples: [sample],
+            toolActivitySource: Self.toolSource)
+        let browser = try Self.toolBrowser(session)
+        let view = try #require(browser.toolActivityView(for: session))
+        #expect(view.source == Self.toolSource)
+        #expect(view.turnID == nil)
+        #expect(view.range == browser.context.activityRange)
+        #expect(view.timeZone.identifier == "Asia/Shanghai")
+        #expect(view.hidePersonalInfo)
+        #expect(view.lastActivity == activity)
+        #expect(session.totalTokens == nil)
+        #expect(session.costUSD == nil)
+    }
+
+    @Test
+    func `unattributed usage keeps native operations accessible at session scope`() throws {
+        let session = Self.session(
+            id: Self.toolSource.sessionID,
+            turns: [Self.toolTurn(nil)],
+            toolActivitySource: Self.toolSource)
+        let browser = try Self.toolBrowser(session)
+        let view = try #require(browser.toolActivityView(for: session))
+        #expect(view.source == Self.toolSource)
+        #expect(view.turnID == nil)
+        #expect(view.range == browser.context.activityRange)
+    }
+
+    @Test
+    func `attributed sessions retain an all operations route alongside scoped tool lists`() throws {
+        for turns in [[Self.toolTurn("native-turn")], [Self.toolTurn(nil), Self.toolTurn("native-turn")]] {
+            let session = Self.session(
+                id: Self.toolSource.sessionID,
+                turns: turns,
+                toolActivitySource: Self.toolSource)
+            let browser = try Self.toolBrowser(session)
+            let all = try #require(browser.toolActivityView(for: session))
+            #expect(all.turnID == nil)
+            #expect(all.source == Self.toolSource)
+            let view = try #require(browser.toolActivityView(for: session, turnID: "native-turn"))
+            #expect(view.source == Self.toolSource)
+            #expect(view.turnID == "native-turn")
+            #expect(view.range == browser.context.activityRange)
+            let operations = ["native-turn", "tool-only-turn"].map { id in
+                SessionToolOperation(
+                    id: .init(threadID: Self.toolSource.sessionID, turnID: id, itemID: id),
+                    kind: .command,
+                    name: "CommandExecution",
+                    preview: nil,
+                    completedAt: session.lastActivity,
+                    outcome: .completed,
+                    exitCode: 0,
+                    durationMilliseconds: 1,
+                    timing: .native,
+                    recordOffset: 0,
+                    recordLength: 1)
+            }
+            let snapshot = SessionToolActivitySnapshot(
+                source: Self.toolSource,
+                operations: operations,
+                ignoredRecordCount: 0,
+                isPartial: false,
+                fileSize: 2,
+                modificationDate: session.lastActivity,
+                fileNumber: 0)
+            #expect(snapshot.operations(in: all.range, turnID: all.turnID).map(\.id.turnID)
+                == ["native-turn", "tool-only-turn"])
+            #expect(snapshot.operations(in: view.range, turnID: view.turnID).map(\.id.turnID) == ["native-turn"])
+        }
+    }
+
+    @Test
+    func `tool fallback requires a supplied source and reporting range`() throws {
+        let withoutSource = Self.session(id: Self.toolSource.sessionID)
+        #expect(try Self.toolBrowser(withoutSource).toolActivityView(for: withoutSource) == nil)
+        let withSource = Self.session(id: Self.toolSource.sessionID, toolActivitySource: Self.toolSource)
+        let withoutRange = try Self.toolBrowser(withSource, range: nil)
+        #expect(withoutRange.toolActivityView(for: withSource) == nil)
+    }
+
+    private static let toolSource = SessionToolActivitySource(
+        fileURL: URL(fileURLWithPath: "/synthetic/rollout.jsonl"),
+        sessionID: "tool-session")
+
+    private static func toolTurn(_ id: String?) -> CostUsageSessionTurn {
+        CostUsageSessionTurn(
+            turnID: id,
+            firstActivity: nil,
+            lastActivity: nil,
+            inputTokens: 120,
+            cachedInputTokens: 90,
+            outputTokens: 20,
+            reasoningTokens: 10,
+            totalTokens: 140,
+            requestCount: 2,
+            costUSD: 0.02)
+    }
+
+    private static func toolBrowser(
+        _ session: CostUsageSessionBreakdown,
+        range: Range<Date>? = Date(timeIntervalSince1970: 0)..<Date(timeIntervalSince1970: 10)) throws
+        -> SessionUsageBrowser
+    {
+        let context = try SessionUsageBrowserContext(
+            providerName: "Synthetic agent",
+            windowLabel: "Synthetic reporting window",
+            sessions: [session],
+            currencyCode: "USD",
+            costMultiplier: 1,
+            timeZone: #require(TimeZone(identifier: "Asia/Shanghai")),
+            activityRange: range)
+        return SessionUsageBrowser(context: context, hidePersonalInfo: true)
+    }
+
     private static func session(
         id: String,
         title: String? = nil,
         activity: TimeInterval = 1,
         cached: Int? = 90,
         total: Int? = 140,
-        cost: Double? = 0.02) -> CostUsageSessionBreakdown
+        cost: Double? = 0.02,
+        turns: [CostUsageSessionTurn] = [],
+        toolActivitySource: SessionToolActivitySource? = nil) -> CostUsageSessionBreakdown
     {
         CostUsageSessionBreakdown(
             sessionID: id,
@@ -162,6 +291,8 @@ struct SessionUsagePresentationTests {
             requestCount: 2,
             costUSD: cost,
             modelBreakdowns: [],
-            title: title)
+            title: title,
+            turns: turns,
+            toolActivitySource: toolActivitySource)
     }
 }

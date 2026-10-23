@@ -35,6 +35,18 @@ struct SessionUsageBrowser: View {
     @State private var sort = SessionUsagePresentation.Sort.activity
     @State private var ascending = false
     @State private var selectedSessionID: String?
+    @State private var requestDetails: (key: DetailKey, value: CostUsageSessionDetails)?
+    @State private var loadingDetails = false
+    @State private var detailError: CostUsageSessionDetailError?
+
+    private struct DetailKey: Hashable {
+        let source: CostUsageSessionDetailSource?
+        let sessionID: String?
+        let lastActivity: Date?
+        let costUSD: Double?
+        let range: Range<Date>?
+        let timeZone: String
+    }
 
     init(context: SessionUsageBrowserContext, hidePersonalInfo: Bool, selectedSessionID: String? = nil) {
         self.context = context
@@ -52,7 +64,26 @@ struct SessionUsageBrowser: View {
     }
 
     private var selectedSession: CostUsageSessionBreakdown? {
-        self.sessions.first { $0.sessionID == self.selectedSessionID } ?? self.sessions.first
+        guard let session = self.sessions.first(where: { $0.sessionID == self.selectedSessionID }) ?? self.sessions
+            .first
+        else { return nil }
+        guard let details = self.requestDetails, details.key == self.detailKey(for: session)
+        else { return session }
+        return session.withRequestDetails(details.value.turns)
+    }
+
+    private var detailKey: DetailKey {
+        self.detailKey(for: self.selectedSession)
+    }
+
+    private func detailKey(for session: CostUsageSessionBreakdown?) -> DetailKey {
+        DetailKey(
+            source: session?.requestDetailSource,
+            sessionID: session?.sessionID,
+            lastActivity: session?.lastActivity,
+            costUSD: session?.costUSD,
+            range: self.context.activityRange,
+            timeZone: self.context.timeZone.identifier)
     }
 
     var body: some View {
@@ -127,6 +158,35 @@ struct SessionUsageBrowser: View {
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .task(id: self.detailKey) { await self.loadSelectedDetails() }
+        .onDisappear { self.requestDetails = nil }
+    }
+
+    private func loadSelectedDetails() async {
+        guard !Task.isCancelled else { return }
+        self.requestDetails = nil
+        self.detailError = nil
+        self.loadingDetails = false
+        guard let session = self.selectedSession, let source = session.requestDetailSource,
+              let range = self.context.activityRange else { return }
+        let key = self.detailKey(for: session)
+        self.loadingDetails = true
+        do {
+            let details = try await CostUsageSessionDetailLoader.load(
+                source: source,
+                lastActivity: session.lastActivity,
+                range: range,
+                timeZone: self.context.timeZone)
+            try Task.checkCancellation()
+            self.requestDetails = (key, details)
+            self.loadingDetails = false
+        } catch is CancellationError {
+            // Selection changes cancel queued/in-flight work and release the previous result.
+        } catch {
+            guard !Task.isCancelled else { return }
+            self.detailError = error as? CostUsageSessionDetailError ?? .unavailable
+            self.loadingDetails = false
+        }
     }
 
     private func sessionRow(_ session: CostUsageSessionBreakdown) -> some View {
@@ -212,13 +272,27 @@ struct SessionUsageBrowser: View {
                         "Messages sharing a turn cannot be priced separately."))
                     .font(.caption)
                     .foregroundStyle(.secondary)
-                if session.turns.isEmpty {
+                if self.loadingDetails {
+                    ProgressView().controlSize(.small)
+                } else if let error = self.detailError {
+                    Text(L(error == .limitExceeded
+                            ? "Request details exceed the limit."
+                            : "Request details are unavailable. Refresh usage and try again."))
+                        .font(.callout).foregroundStyle(.secondary)
+                } else if session.turns.isEmpty {
                     Text(L("No turn-level usage records are available."))
                         .font(.callout)
                         .foregroundStyle(.secondary)
                 }
                 ForEach(Array(session.turns.enumerated()), id: \.element.id) { index, turn in
                     self.turnRow(turn, index: index, session: session)
+                }
+
+                if let activity = self.toolActivityView(for: session) {
+                    Divider()
+                    activity
+                    Text(L("Tool activity has no separate recorded token or monetary cost."))
+                        .font(.caption2).foregroundStyle(.secondary)
                 }
 
                 if !session.modelBreakdowns.isEmpty {
@@ -245,6 +319,21 @@ struct SessionUsageBrowser: View {
             .padding(24)
             .frame(maxWidth: .infinity, alignment: .leading)
         }
+    }
+
+    func toolActivityView(
+        for session: CostUsageSessionBreakdown,
+        turnID: String? = nil) -> SpendSessionToolActivityView?
+    {
+        guard let source = session.toolActivitySource, let range = self.context.activityRange else { return nil }
+        // Keep an all-operations route: tools can belong to turns with no retained billed request.
+        return SpendSessionToolActivityView(
+            source: source,
+            lastActivity: session.lastActivity,
+            range: range,
+            timeZone: self.context.timeZone,
+            hidePersonalInfo: self.hidePersonalInfo,
+            turnID: turnID)
     }
 
     private func turnRow(_ turn: CostUsageSessionTurn, index: Int, session: CostUsageSessionBreakdown) -> some View {
@@ -274,16 +363,10 @@ struct SessionUsageBrowser: View {
                     .padding(.vertical, 8)
                 }
             }
-            if let source = session.toolActivitySource, let range = self.context.activityRange,
-               let turnID = turn.turnID
+            if let turnID = turn.turnID,
+               let activity = self.toolActivityView(for: session, turnID: turnID)
             {
-                SpendSessionToolActivityView(
-                    source: source,
-                    lastActivity: session.lastActivity,
-                    range: range,
-                    timeZone: self.context.timeZone,
-                    hidePersonalInfo: self.hidePersonalInfo,
-                    turnID: turnID)
+                activity
                 Text(L("Tool activity has no separate recorded token or monetary cost."))
                     .font(.caption2).foregroundStyle(.secondary)
             }
@@ -336,7 +419,9 @@ struct SessionUsageBrowser: View {
 
     private func identity(_ session: CostUsageSessionBreakdown) -> CostHistoryIdentity {
         CostHistoryIdentity(
-            sessionID: session.sessionID, title: session.title, hidePersonalInfo: self.hidePersonalInfo)
+            sessionID: session.sessionID,
+            title: session.title,
+            hidePersonalInfo: self.hidePersonalInfo)
     }
 
     private func tokenText(_ value: Int?) -> String {
@@ -346,7 +431,9 @@ struct SessionUsageBrowser: View {
 
     private func costText(_ value: Double?) -> String {
         SessionUsagePresentation.costText(
-            value, multiplier: self.context.costMultiplier, currencyCode: self.context.currencyCode)
+            value,
+            multiplier: self.context.costMultiplier,
+            currencyCode: self.context.currencyCode)
     }
 
     private func dateText(_ date: Date, seconds: Bool = false) -> String {

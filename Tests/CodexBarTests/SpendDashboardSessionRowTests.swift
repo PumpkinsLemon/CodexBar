@@ -4,6 +4,80 @@ import Testing
 @testable import CodexBarCore
 
 struct SpendDashboardSessionRowTests {
+    @Test @MainActor
+    func `selected dashboard day keeps full period session totals details and dates aligned`() throws {
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.timeZone = try #require(TimeZone(identifier: "Asia/Shanghai"))
+        let firstDay = try #require(calendar.date(from: DateComponents(year: 2026, month: 10, day: 20)))
+        let secondDay = try #require(calendar.date(from: DateComponents(year: 2026, month: 10, day: 21)))
+        let end = try #require(calendar.date(from: DateComponents(year: 2026, month: 10, day: 22)))
+        let samples = try [firstDay, secondDay].map { date in
+            try #require(CostUsageTurnPerformanceSample(
+                completedAt: date.addingTimeInterval(3600),
+                outputTokens: 10,
+                durationMilliseconds: 1000))
+        }
+        let snapshot = CostUsageTokenSnapshot(
+            sessionTokens: nil,
+            sessionCostUSD: nil,
+            last30DaysTokens: 300,
+            last30DaysCostUSD: 0.3,
+            historyDays: 2,
+            daily: [
+                .init(
+                    date: "2026-10-20",
+                    inputTokens: 100,
+                    outputTokens: 0,
+                    totalTokens: 100,
+                    costUSD: 0.1,
+                    modelsUsed: nil,
+                    modelBreakdowns: nil),
+                .init(
+                    date: "2026-10-21",
+                    inputTokens: 200,
+                    outputTokens: 0,
+                    totalTokens: 200,
+                    costUSD: 0.2,
+                    modelsUsed: nil,
+                    modelBreakdowns: nil),
+            ],
+            sessions: [
+                Self.session(
+                    id: "both-days",
+                    cost: 0.3,
+                    tokens: 300,
+                    lastActivity: secondDay,
+                    performance: samples),
+                Self.session(id: "first-day-only", cost: 0.1, tokens: 100, lastActivity: firstDay),
+            ],
+            updatedAt: secondDay.addingTimeInterval(3600))
+        for selectedDay in [nil, firstDay, secondDay] {
+            let model = SpendDashboardModel.build(
+                inputs: [.init(id: "codex", provider: .codex, displayName: "Codex", snapshot: snapshot)],
+                requestedDays: 2,
+                now: snapshot.updatedAt,
+                calendar: calendar,
+                selectedDay: selectedDay)
+            let group = try #require(model.groups.first)
+            let context = try #require(SpendSessionRows(group: group, hidePersonalInfo: false).context(for: "codex"))
+            #expect(context.activityRange == firstDay..<end)
+            #expect(context.sessions.first { $0.sessionID == "both-days" }?.totalTokens == 300)
+            #expect(context.sessions.first { $0.sessionID == "both-days" }?.turnPerformanceSamples.count == 2)
+            #expect(context.sessions.first { $0.sessionID == "first-day-only" }?.totalTokens == 100)
+            let format = Date.FormatStyle(
+                date: .abbreviated,
+                time: .omitted,
+                locale: codexBarLocalizedLocale(),
+                calendar: calendar,
+                timeZone: calendar.timeZone)
+            #expect(context.windowLabel == firstDay.formatted(format) + " – " + secondDay.formatted(format))
+            #expect(!context.windowLabel.contains(end.formatted(format)))
+            if selectedDay == nil {
+                #expect(spendToolActivityRange(group: group) == firstDay..<end)
+            }
+        }
+    }
+
     @Test
     func `different agents preserve independent source identities and shared inspection data`() throws {
         var calendar = Calendar(identifier: .gregorian)
@@ -172,7 +246,10 @@ struct SpendDashboardSessionRowTests {
         let sessions = [Self.session(id: "shared", cost: 1, tokens: 10)]
         let first = Self.sessionInput(sessions: sessions)
         let second = SpendDashboardModel.ProviderInput(
-            id: "codex-second", provider: .codex, displayName: "Codex second", snapshot: first.snapshot)
+            id: "codex-second",
+            provider: .codex,
+            displayName: "Codex second",
+            snapshot: first.snapshot)
         for inputs in [[first, second], [second, first]] {
             let model = SpendDashboardModel.build(inputs: inputs, requestedDays: 90, now: Self.now)
             let rows = try #require(model.groups.first?.sessions)
@@ -195,7 +272,10 @@ struct SpendDashboardSessionRowTests {
         ]
         let expected = ["more-tokens", "a", "b", "older", "free", "unpriced"]
         let baseline = SpendDashboardModel.build(
-            inputs: [Self.sessionInput(sessions: [])], requestedDays: 90, now: Self.now, calendar: calendar)
+            inputs: [Self.sessionInput(sessions: [])],
+            requestedDays: 90,
+            now: Self.now,
+            calendar: calendar)
         let baselineGroup = try #require(baseline.groups.first)
         for offset in sessions.indices {
             let rotated = Array(sessions[offset...] + sessions[..<offset])
@@ -249,7 +329,8 @@ struct SpendDashboardSessionRowTests {
         tokens: Int,
         title: String? = nil,
         projectPath: String? = nil,
-        lastActivity: Date = Self.now) -> CostUsageSessionBreakdown
+        lastActivity: Date = Self.now,
+        performance: [CostUsageTurnPerformanceSample] = []) -> CostUsageSessionBreakdown
     {
         CostUsageSessionBreakdown(
             sessionID: id,
@@ -263,7 +344,8 @@ struct SpendDashboardSessionRowTests {
             modelBreakdowns: [],
             projectPath: projectPath,
             projectName: projectPath.map { URL(fileURLWithPath: $0).lastPathComponent },
-            title: title)
+            title: title,
+            turnPerformanceSamples: performance)
     }
 
     private static let now = Date(timeIntervalSince1970: 1_784_179_200) // 2026-07-16 00:00:00 UTC

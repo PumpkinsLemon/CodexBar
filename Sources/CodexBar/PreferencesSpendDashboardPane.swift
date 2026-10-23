@@ -1133,17 +1133,19 @@ struct SpendSessionRows: View {
         return row.sourceName ?? provider
     }
 
-    private func context(for id: String) -> SessionUsageBrowserContext? {
+    func context(for id: String) -> SessionUsageBrowserContext? {
         let rows = self.group.sessions.filter { $0.sourceID == id }
         guard let first = rows.first else { return nil }
+        // Session totals belong to the source snapshot's reporting period, independent of chart day selection.
+        let range = first.reportingRange ?? self.group.chartDomain.lowerBound..<self.group.chartDomain.upperBound
         let format = Date.FormatStyle(
             date: .abbreviated,
             time: .omitted,
             locale: codexBarLocalizedLocale(),
             calendar: self.group.calendar,
             timeZone: self.group.timeZone)
-        let label = self.group.chartDomain.lowerBound.formatted(format) + " – "
-            + self.group.chartDomain.upperBound.formatted(format)
+        let label = range.lowerBound.formatted(format) + " – "
+            + range.upperBound.addingTimeInterval(-0.001).formatted(format)
         return SessionUsageBrowserContext(
             providerName: self.sourceName(id),
             windowLabel: label,
@@ -1165,7 +1167,7 @@ struct SpendSessionRows: View {
             currencyCode: self.group.currencyCode,
             costMultiplier: first.costMultiplier,
             timeZone: self.group.timeZone,
-            activityRange: spendToolActivityRange(group: self.group))
+            activityRange: range)
     }
 }
 

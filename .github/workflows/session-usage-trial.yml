@@ -39,7 +39,7 @@ jobs:
         run: |
           set -euo pipefail
           /usr/libexec/PlistBuddy -c 'Add :CodexBarTrialBuild bool true' CodexBar.app/Contents/Info.plist
-          /usr/libexec/PlistBuddy -c 'Set :CFBundleShortVersionString 0.79.0-session-trial3' CodexBar.app/Contents/Info.plist
+          /usr/libexec/PlistBuddy -c 'Set :CFBundleShortVersionString 0.80.0-session-trial4' CodexBar.app/Contents/Info.plist
           codesign --force --sign - --preserve-metadata=entitlements CodexBar.app
           codesign --verify --deep --strict CodexBar.app
           mkdir -p trial
