@@ -2732,3 +2732,6 @@
 "Request details exceed the limit." = "Chi tiết yêu cầu vượt quá giới hạn.";
 
 "Request details are unavailable. Refresh usage and try again." = "Không có chi tiết yêu cầu. Hãy làm mới mức sử dụng rồi thử lại.";
+"Primary" = "Chính";
+"Secondary" = "Phụ";
+"Tertiary" = "Thứ ba";

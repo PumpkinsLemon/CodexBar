@@ -2730,3 +2730,6 @@
 "Request details exceed the limit." = "Förfrågningsdetaljerna överskrider gränsen.";
 
 "Request details are unavailable. Refresh usage and try again." = "Förfrågningsdetaljerna är inte tillgängliga. Uppdatera användningen och försök igen.";
+"Primary" = "Primärt";
+"Secondary" = "Sekundärt";
+"Tertiary" = "Tertiärt";

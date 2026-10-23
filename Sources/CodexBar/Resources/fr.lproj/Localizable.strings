@@ -2730,3 +2730,6 @@
 "Request details exceed the limit." = "Les détails des requêtes dépassent la limite.";
 
 "Request details are unavailable. Refresh usage and try again." = "Les détails des requêtes ne sont pas disponibles. Actualisez l’utilisation et réessayez.";
+"Primary" = "Principale";
+"Secondary" = "Secondaire";
+"Tertiary" = "Tertiaire";

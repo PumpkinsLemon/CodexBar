@@ -2735,3 +2735,6 @@
 "Request details exceed the limit." = "جزئیات درخواست‌ها از حد مجاز بیشتر است.";
 
 "Request details are unavailable. Refresh usage and try again." = "جزئیات درخواست‌ها در دسترس نیست. اطلاعات مصرف را تازه‌سازی کنید و دوباره تلاش کنید.";
+"Primary" = "اصلی";
+"Secondary" = "ثانویه";
+"Tertiary" = "سوم";

@@ -2731,3 +2731,6 @@
 "Request details exceed the limit." = "Os detalhes das solicitações excedem o limite.";
 
 "Request details are unavailable. Refresh usage and try again." = "Os detalhes das solicitações não estão disponíveis. Atualize o uso e tente novamente.";
+"Primary" = "Principal";
+"Secondary" = "Secundária";
+"Tertiary" = "Terciária";

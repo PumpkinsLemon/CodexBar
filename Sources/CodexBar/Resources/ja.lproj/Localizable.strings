@@ -2731,3 +2731,6 @@
 "Request details exceed the limit." = "リクエストの詳細が上限を超えています。";
 
 "Request details are unavailable. Refresh usage and try again." = "リクエストの詳細を取得できません。使用状況を更新して、もう一度お試しください。";
+"Primary" = "プライマリ";
+"Secondary" = "セカンダリ";
+"Tertiary" = "ターシャリ";

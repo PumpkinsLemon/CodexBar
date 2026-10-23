@@ -2734,3 +2734,6 @@
 "Request details exceed the limit." = "İstek ayrıntıları sınırı aşıyor.";
 
 "Request details are unavailable. Refresh usage and try again." = "İstek ayrıntıları kullanılamıyor. Kullanımı yenileyip tekrar deneyin.";
+"Primary" = "Birincil";
+"Secondary" = "İkincil";
+"Tertiary" = "Üçüncül";

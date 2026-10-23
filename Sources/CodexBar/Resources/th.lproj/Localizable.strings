@@ -2733,3 +2733,6 @@
 "Request details exceed the limit." = "รายละเอียดคำขอเกินขีดจำกัด";
 
 "Request details are unavailable. Refresh usage and try again." = "ไม่สามารถแสดงรายละเอียดคำขอได้ โปรดรีเฟรชข้อมูลการใช้งานแล้วลองอีกครั้ง";
+"Primary" = "หลัก";
+"Secondary" = "รอง";
+"Tertiary" = "ลำดับที่สาม";

@@ -2732,3 +2732,6 @@
 "Request details exceed the limit." = "Обсяг відомостей про запити перевищує ліміт.";
 
 "Request details are unavailable. Refresh usage and try again." = "Відомості про запити недоступні. Оновіть дані про використання та спробуйте ще раз.";
+"Primary" = "Основне";
+"Secondary" = "Додаткове";
+"Tertiary" = "Третє";

@@ -2730,3 +2730,6 @@
 "Request details exceed the limit." = "Os detalles das solicitudes superan o límite.";
 
 "Request details are unavailable. Refresh usage and try again." = "Os detalles das solicitudes non están dispoñibles. Actualiza o uso e téntao de novo.";
+"Primary" = "Principal";
+"Secondary" = "Secundaria";
+"Tertiary" = "Terciaria";

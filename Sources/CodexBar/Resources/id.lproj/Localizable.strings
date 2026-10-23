@@ -2733,3 +2733,6 @@
 "Request details exceed the limit." = "Detail permintaan melebihi batas.";
 
 "Request details are unavailable. Refresh usage and try again." = "Detail permintaan tidak tersedia. Muat ulang penggunaan dan coba lagi.";
+"Primary" = "Utama";
+"Secondary" = "Sekunder";
+"Tertiary" = "Tersier";

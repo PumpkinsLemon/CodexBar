@@ -2733,3 +2733,6 @@
 "Request details exceed the limit." = "Els detalls de les sol·licituds superen el límit.";
 
 "Request details are unavailable. Refresh usage and try again." = "Els detalls de les sol·licituds no estan disponibles. Actualitza l’ús i torna-ho a provar.";
+"Primary" = "Principal";
+"Secondary" = "Secundària";
+"Tertiary" = "Terciària";
