@@ -2696,6 +2696,6 @@
 "Tool activity has no separate recorded token or monetary cost." = "도구 호출의 토큰 사용량이나 비용은 별도로 기록되지 않습니다.";
 "Request %d" = "요청 %d";
 
-"Request details exceed the limit." = "Request details exceed the limit.";
+"Request details exceed the limit." = "요청 세부 정보가 한도를 초과합니다.";
 
-"Request details are unavailable. Refresh usage and try again." = "Request details are unavailable. Refresh usage and try again.";
+"Request details are unavailable. Refresh usage and try again." = "요청 세부 정보를 사용할 수 없습니다. 사용량을 새로고침한 후 다시 시도하세요.";

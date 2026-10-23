@@ -2730,6 +2730,6 @@
 "Tool activity has no separate recorded token or monetary cost." = "ไม่มีการบันทึกโทเคนหรือค่าใช้จ่ายแยกสำหรับการเรียกเครื่องมือ";
 "Request %d" = "คำขอที่ %d";
 
-"Request details exceed the limit." = "Request details exceed the limit.";
+"Request details exceed the limit." = "รายละเอียดคำขอเกินขีดจำกัด";
 
-"Request details are unavailable. Refresh usage and try again." = "Request details are unavailable. Refresh usage and try again.";
+"Request details are unavailable. Refresh usage and try again." = "ไม่สามารถแสดงรายละเอียดคำขอได้ โปรดรีเฟรชข้อมูลการใช้งานแล้วลองอีกครั้ง";

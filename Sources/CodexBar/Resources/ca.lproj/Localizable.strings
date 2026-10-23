@@ -2730,6 +2730,6 @@
 "Tool activity has no separate recorded token or monetary cost." = "No es registra cap cost independent en tokens o diners per a les crides a eines.";
 "Request %d" = "Petició %d";
 
-"Request details exceed the limit." = "Request details exceed the limit.";
+"Request details exceed the limit." = "Els detalls de les sol·licituds superen el límit.";
 
-"Request details are unavailable. Refresh usage and try again." = "Request details are unavailable. Refresh usage and try again.";
+"Request details are unavailable. Refresh usage and try again." = "Els detalls de les sol·licituds no estan disponibles. Actualitza l’ús i torna-ho a provar.";

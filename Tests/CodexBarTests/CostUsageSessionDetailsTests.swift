@@ -9,6 +9,39 @@ import CSQLite3
 
 struct CostUsageSessionDetailsTests {
     @Test
+    func `catch up progress cannot load newer requests under an older session summary`() throws {
+        let fixture = try Fixture()
+        defer { fixture.remove() }
+        let path = fixture.source.sessionSource.fileURL.path
+        var partial = fixture.cache
+        var usage = try #require(partial.files[path])
+        let row = try #require(usage.codexRows?.first)
+        usage.codexRows = [row]
+        usage.days = [row.day: [row.model: [row.input, row.cached, row.output]]]
+        usage.parsedBytes = 0
+        usage.codexScanComplete = false
+        partial.files[path] = usage
+        partial.days = usage.days
+        _ = CostUsageStoreAccess.replace(cacheRoot: fixture.root, cache: partial, calendar: fixture.calendar)
+        let summary = try #require(CostUsageScanner.buildCodexReportProjectionsFromCache(
+            cache: partial,
+            range: fixture.dayRange,
+            modelsDevCatalog: ModelsDevCatalog(providers: [:]),
+            modelsDevCacheRoot: fixture.root).sessions.first)
+        #expect(summary.totalTokens == 110)
+        _ = CostUsageStoreAccess.replace(cacheRoot: fixture.root, cache: fixture.cache, calendar: fixture.calendar)
+        #expect(try fixture.read().compactMap(\.totalTokens).reduce(0, +) == 220)
+        #expect(throws: CostUsageSessionDetailError.sourceChanged) {
+            try CostUsageSessionDetailLoader.read(
+                source: #require(summary.requestDetailSource),
+                lastActivity: summary.lastActivity,
+                range: fixture.range,
+                timeZone: fixture.calendar.timeZone,
+                catalog: ModelsDevCatalog(providers: [:]))
+        }
+    }
+
+    @Test
     func `selected requests retain resolved priority pricing over older standard row metadata`() throws {
         let fixture = try Fixture(priority: true)
         defer { fixture.remove() }
@@ -18,7 +51,7 @@ struct CostUsageSessionDetailsTests {
             modelsDevCatalog: ModelsDevCatalog(providers: [:]),
             modelsDevCacheRoot: fixture.root).sessions.first)
         let details = try fixture.read()
-        let costs = details.turns.compactMap(\.costUSD)
+        let costs = details.compactMap(\.costUSD)
         #expect(costs.count == 2)
         #expect(abs(costs.reduce(0, +) - (summary.costUSD ?? -1)) < 1e-12)
         #expect((costs.first ?? 0) > (costs.last ?? 0))
@@ -43,13 +76,10 @@ struct CostUsageSessionDetailsTests {
         WHERE file_id IN (SELECT id FROM files WHERE session_id != 'session-0')
         """)
         let details = try fixture.read()
-        #expect(details.source == fixture.source)
-        #expect(details.range == fixture.range)
-        #expect(details.timeZoneIdentifier == "Asia/Shanghai")
-        #expect(details.turns.map(\.turnID) == ["turn-0", "turn-1"])
-        #expect(details.turns.compactMap(\.totalTokens).reduce(0, +) == selected.totalTokens)
-        #expect(abs(details.turns.compactMap(\.costUSD).reduce(0, +) - (selected.costUSD ?? -1)) < 1e-12)
-        #expect(details.turns.flatMap(\.requests).count == 2)
+        #expect(details.map(\.turnID) == ["turn-0", "turn-1"])
+        #expect(details.compactMap(\.totalTokens).reduce(0, +) == selected.totalTokens)
+        #expect(abs(details.compactMap(\.costUSD).reduce(0, +) - (selected.costUSD ?? -1)) < 1e-12)
+        #expect(details.flatMap(\.requests).count == 2)
         #expect(selected.turns.isEmpty, "Opening details must not mutate the retained history summaries")
     }
 
@@ -61,7 +91,7 @@ struct CostUsageSessionDetailsTests {
         limits.requests = 1
         #expect(throws: CostUsageSessionDetailError.limitExceeded) { try fixture.read(limits: limits) }
         limits.requests = 2
-        #expect(try fixture.read(limits: limits).turns.count == 2)
+        #expect(try fixture.read(limits: limits).count == 2)
         limits.payloadBytes = 1
         #expect(throws: CostUsageSessionDetailError.limitExceeded) { try fixture.read(limits: limits) }
     }
@@ -95,7 +125,8 @@ struct CostUsageSessionDetailsTests {
         defer { fixture.remove() }
         let wrongSession = CostUsageSessionDetailSource(
             databaseURL: fixture.source.databaseURL,
-            sessionSource: .init(fileURL: fixture.source.sessionSource.fileURL, sessionID: "another-account"))
+            sessionSource: .init(fileURL: fixture.source.sessionSource.fileURL, sessionID: "another-account"),
+            parsedBytes: fixture.source.parsedBytes)
         #expect(throws: CostUsageSessionDetailError.unavailable) {
             try CostUsageSessionDetailLoader.read(
                 source: wrongSession,
@@ -126,7 +157,7 @@ struct CostUsageSessionDetailsTests {
         let store = CostUsageStore(cacheRoot: fixture.root)
         #expect(await store.configuration()?.userVersion == Int(CostUsageStore.schemaVersion))
         #expect(await store.rebuildCount == 0)
-        #expect(try fixture.read().turns.flatMap(\.requests).count == 2)
+        #expect(try fixture.read().flatMap(\.requests).count == 2)
     }
 
     @Test
@@ -140,7 +171,7 @@ struct CostUsageSessionDetailsTests {
             range: nextDay,
             timeZone: fixture.calendar.timeZone,
             catalog: ModelsDevCatalog(providers: [:]))
-        #expect(details.turns.isEmpty)
+        #expect(details.isEmpty)
         var cancellationChecks = 0
         #expect(throws: CancellationError.self) {
             try CostUsageSessionDetailLoader.read(
@@ -154,7 +185,7 @@ struct CostUsageSessionDetailsTests {
                 })
         }
         // A previous window or failure must not be cached for the next selection.
-        #expect(try fixture.read().turns.count == 2)
+        #expect(try fixture.read().count == 2)
     }
 
     @Test
@@ -181,7 +212,8 @@ struct CostUsageSessionDetailsTests {
             databaseURL: database,
             sessionSource: .init(
                 fileURL: root.appendingPathComponent("session.jsonl"),
-                sessionID: "missing"))
+                sessionID: "missing"),
+            parsedBytes: nil)
         let now = Date(timeIntervalSince1970: 1_792_562_400)
         #expect(throws: CostUsageSessionDetailError.unavailable) {
             try CostUsageSessionDetailLoader.read(
@@ -274,11 +306,12 @@ struct CostUsageSessionDetailsTests {
                 databaseURL: CostUsageStore.databaseURL(cacheRoot: self.root),
                 sessionSource: .init(
                     fileURL: self.root.appendingPathComponent("session-0.jsonl"),
-                    sessionID: "session-0"))
+                    sessionID: "session-0"),
+                parsedBytes: 1)
             _ = CostUsageStoreAccess.replace(cacheRoot: self.root, cache: cache, calendar: calendar)
         }
 
-        func read(limits: CostUsageSessionDetailLoader.Limits = .init()) throws -> CostUsageSessionDetails {
+        func read(limits: CostUsageSessionDetailLoader.Limits = .init()) throws -> [CostUsageSessionTurn] {
             try CostUsageSessionDetailLoader.read(
                 source: self.source,
                 lastActivity: self.now,
@@ -294,7 +327,9 @@ struct CostUsageSessionDetailsTests {
             let pointer = try #require(database)
             defer { sqlite3_close_v2(pointer) }
             #expect(opened == SQLITE_OK)
-            #expect(sqlite3_exec(pointer, sql, nil, nil, nil) == SQLITE_OK)
+            sqlite3_busy_timeout(pointer, 5000)
+            let result = sqlite3_exec(pointer, sql, nil, nil, nil)
+            #expect(result == SQLITE_OK, "SQLite result: \(result)")
         }
 
         func remove() { try? FileManager.default.removeItem(at: self.root) }

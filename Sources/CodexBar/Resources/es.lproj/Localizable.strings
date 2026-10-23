@@ -2726,6 +2726,6 @@
 "Tool activity has no separate recorded token or monetary cost." = "No se registra un costo de tokens o monetario independiente para las llamadas a herramientas.";
 "Request %d" = "Solicitud %d";
 
-"Request details exceed the limit." = "Request details exceed the limit.";
+"Request details exceed the limit." = "Los detalles de las solicitudes superan el límite.";
 
-"Request details are unavailable. Refresh usage and try again." = "Request details are unavailable. Refresh usage and try again.";
+"Request details are unavailable. Refresh usage and try again." = "Los detalles de las solicitudes no están disponibles. Actualiza el uso e inténtalo de nuevo.";

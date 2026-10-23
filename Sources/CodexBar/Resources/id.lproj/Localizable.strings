@@ -2730,6 +2730,6 @@
 "Tool activity has no separate recorded token or monetary cost." = "Panggilan alat tidak memiliki biaya token atau uang yang tercatat secara terpisah.";
 "Request %d" = "Permintaan %d";
 
-"Request details exceed the limit." = "Request details exceed the limit.";
+"Request details exceed the limit." = "Detail permintaan melebihi batas.";
 
-"Request details are unavailable. Refresh usage and try again." = "Request details are unavailable. Refresh usage and try again.";
+"Request details are unavailable. Refresh usage and try again." = "Detail permintaan tidak tersedia. Muat ulang penggunaan dan coba lagi.";

@@ -2732,6 +2732,6 @@
 "Tool activity has no separate recorded token or monetary cost." = "هزینهٔ توکن یا هزینهٔ مالی جداگانه‌ای برای فراخوانی ابزار ثبت نشده است.";
 "Request %d" = "درخواست %d";
 
-"Request details exceed the limit." = "Request details exceed the limit.";
+"Request details exceed the limit." = "جزئیات درخواست‌ها از حد مجاز بیشتر است.";
 
-"Request details are unavailable. Refresh usage and try again." = "Request details are unavailable. Refresh usage and try again.";
+"Request details are unavailable. Refresh usage and try again." = "جزئیات درخواست‌ها در دسترس نیست. اطلاعات مصرف را تازه‌سازی کنید و دوباره تلاش کنید.";

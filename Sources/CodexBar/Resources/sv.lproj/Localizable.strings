@@ -2727,6 +2727,6 @@
 "Tool activity has no separate recorded token or monetary cost." = "Inga separata token- eller penningkostnader registreras för verktygsanrop.";
 "Request %d" = "Förfrågan %d";
 
-"Request details exceed the limit." = "Request details exceed the limit.";
+"Request details exceed the limit." = "Förfrågningsdetaljerna överskrider gränsen.";
 
-"Request details are unavailable. Refresh usage and try again." = "Request details are unavailable. Refresh usage and try again.";
+"Request details are unavailable. Refresh usage and try again." = "Förfrågningsdetaljerna är inte tillgängliga. Uppdatera användningen och försök igen.";

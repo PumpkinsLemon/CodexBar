@@ -2731,6 +2731,6 @@
 "Tool activity has no separate recorded token or monetary cost." = "Araç çağrıları için ayrı token veya parasal maliyet kaydedilmez.";
 "Request %d" = "İstek %d";
 
-"Request details exceed the limit." = "Request details exceed the limit.";
+"Request details exceed the limit." = "İstek ayrıntıları sınırı aşıyor.";
 
-"Request details are unavailable. Refresh usage and try again." = "Request details are unavailable. Refresh usage and try again.";
+"Request details are unavailable. Refresh usage and try again." = "İstek ayrıntıları kullanılamıyor. Kullanımı yenileyip tekrar deneyin.";

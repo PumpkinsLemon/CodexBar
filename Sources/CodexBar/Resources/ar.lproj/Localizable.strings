@@ -2732,6 +2732,6 @@
 "Tool activity has no separate recorded token or monetary cost." = "لا تُسجل تكلفة رموز أو تكلفة مالية منفصلة لاستدعاءات الأدوات.";
 "Request %d" = "الطلب %d";
 
-"Request details exceed the limit." = "Request details exceed the limit.";
+"Request details exceed the limit." = "تتجاوز تفاصيل الطلبات الحد المسموح به.";
 
-"Request details are unavailable. Refresh usage and try again." = "Request details are unavailable. Refresh usage and try again.";
+"Request details are unavailable. Refresh usage and try again." = "تفاصيل الطلبات غير متاحة. حدّث بيانات الاستخدام وحاول مرة أخرى.";

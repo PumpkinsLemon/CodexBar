@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.80.1 — Unreleased
+
+### Added
+
+- Usage & Spend: search and sort session summaries, then inspect bounded request accounting for the selected native Codex session without retaining request details during ordinary refreshes (#4730). Thanks @PumpkinsLemon!
+
+### Fixed
+
+- Menu bar: improve stacked text legibility with medium weight while preserving regular weight for single-line layouts (#4713). Thanks @arnodirlam!
+- Linux desktop: fix launcher, Settings/Spending actions, and login startup when home paths contain quotes, dollar signs, backticks, backslashes, or percent signs (#4715). Thanks @Lucenx9!
+
 ## 0.80.0 — 2026-10-23
 
 ### Highlights

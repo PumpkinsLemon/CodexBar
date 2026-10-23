@@ -30,10 +30,14 @@ The inspector uses the existing cost snapshot and preferred currency. Cached inp
 reasoning is a subset of output. Unavailable counters or prices remain unavailable rather than becoming
 zero. Hide personal information also masks the browser's names and prevents search from revealing them.
 
-Synthetic-data previews: [conversation details](screenshots/session-usage-browser-synthetic.png) and
-[privacy mode](screenshots/session-usage-browser-private-synthetic.png), and
-[shared narrow layout](screenshots/session-usage-browser-shared-narrow-synthetic.png).
-These component previews use synthetic data and do not establish that each pictured provider has a session parser.
+Ordinary refreshes retain session summaries and a source handle, without building request-detail arrays.
+Selecting a native Codex session reads only that session's existing SQLite rows. The read is limited to
+5,000 requests, 8 MiB of request payload, 1 MiB of file metadata, and 5,000 day/model aggregates with
+1 MiB of model names. Persisted pricing metadata has a separate 1 MiB limit. If a limit is exceeded or
+the source or its catch-up checkpoint has changed, the summary stays visible and request details are unavailable; totals are never
+silently truncated. Changing selection cancels the previous read, and closing the inspector releases its
+request details. Session accounting keeps the source snapshot's reporting period even when a chart day
+is selected. No additional history store is created.
 
 ## History windows
 

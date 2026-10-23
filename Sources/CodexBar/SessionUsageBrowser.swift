@@ -35,7 +35,7 @@ struct SessionUsageBrowser: View {
     @State private var sort = SessionUsagePresentation.Sort.activity
     @State private var ascending = false
     @State private var selectedSessionID: String?
-    @State private var requestDetails: (key: DetailKey, value: CostUsageSessionDetails)?
+    @State private var requestDetails: (key: DetailKey, turns: [CostUsageSessionTurn])?
     @State private var loadingDetails = false
     @State private var detailError: CostUsageSessionDetailError?
 
@@ -69,7 +69,7 @@ struct SessionUsageBrowser: View {
         else { return nil }
         guard let details = self.requestDetails, details.key == self.detailKey(for: session)
         else { return session }
-        return session.withRequestDetails(details.value.turns)
+        return session.withRequestDetails(details.turns)
     }
 
     private var detailKey: DetailKey {

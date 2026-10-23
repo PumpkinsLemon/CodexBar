@@ -2729,6 +2729,6 @@
 "Tool activity has no separate recorded token or monetary cost." = "Không ghi riêng chi phí token hoặc tiền cho các lệnh gọi công cụ.";
 "Request %d" = "Yêu cầu %d";
 
-"Request details exceed the limit." = "Request details exceed the limit.";
+"Request details exceed the limit." = "Chi tiết yêu cầu vượt quá giới hạn.";
 
-"Request details are unavailable. Refresh usage and try again." = "Request details are unavailable. Refresh usage and try again.";
+"Request details are unavailable. Refresh usage and try again." = "Không có chi tiết yêu cầu. Hãy làm mới mức sử dụng rồi thử lại.";
