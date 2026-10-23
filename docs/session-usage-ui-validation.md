@@ -80,6 +80,10 @@ Native controls in that freshly installed Settings window established:
 | View a session while the local index was updating | The unavailable-detail state preserved the summary; after the refresh completed and Sessions was reopened, native turns loaded. |
 | Expand a native turn | Request count and input/cache/output/reasoning amounts rendered with the turn's estimated cost. |
 | Expand that turn's Model requests disclosure | Individual requests rendered with their model, estimated cost, input/cache/output, timestamp, and reasoning subset. |
+| Search by a saved title shared by two local sessions | Both matching sessions remained selectable; changing selection updated the header and native turns together. |
+| Switch back and forth, including a short sequence of Up/Down selection keys | The final header and turns belonged to the final selected session; no previous-session detail remained visible. This does not prove cancellation of a deliberately slow read. |
+| Reconcile one complete session's displayed turn token totals | Their sum equaled the displayed session token total. Exact unrounded monetary reconciliation remains covered by the SQLite tests. |
+| Expand the session-wide Tool activity entry after billed turns | Native operation totals, filters, and individual operations loaded. The entry remained reachable alongside the billed turns. |
 
 These are actual installed-window observations, not synthetic component renders.
 Private session identities, prompts, timestamps, paths, and amounts are omitted
@@ -88,10 +92,12 @@ label was discovered in this application and corrected in the subsequent source
 change, with a regression through the production context factory. Trial4 does
 not contain that later label correction.
 
-Fast selection switching, forced limit/cancellation behavior, full request-to-summary
+Forced limit/cancellation behavior, exact request-to-summary monetary
 reconciliation, and the installed menu path still require runtime proof; the
-focused tests cover their reader/model contracts. The GUI attempt was interrupted
-by the Mac locking. Do not treat opening a disclosure as proof of those other paths.
+focused tests cover their reader/model contracts. The GUI attempt was initially
+interrupted by the Mac locking and continued after the user unlocked it. The
+test search was cleared afterward. Do not treat ordinary selection switching
+as proof of cancellation under an artificially delayed read.
 
 ## Installed trial baseline
 
