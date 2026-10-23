@@ -1,10 +1,38 @@
 ---
-summary: Installed-app session inspector verification and remaining menu proof.
+summary: Bounded session inspector loading, installed-app evidence, and remaining menu proof.
 read_when:
   - Reviewing session usage inspection and its UI evidence.
 ---
 
 # Session inspector UI verification
+
+## Selected-session loading
+
+Ordinary cost refreshes retain the existing session summaries, without creating or
+sorting request-detail arrays. Search, ordering, and session accounting use those
+summaries. The native adapter captures the cache database and session-file identity;
+the inspector does not discover accounts or scan the history directory.
+
+Selecting a session opens that database read-only and reads only that file's rows
+in one SQLite snapshot. The reader rejects changed session identities, activity
+timestamps, or store schemas. Before decoding, it checks limits of 5,000 requests,
+8 MiB of request payload, 1 MiB of file metadata, and 5,000 day/model aggregates
+with at most 1 MiB of model names. A limit error leaves the session summary visible
+and labels request details unavailable, without presenting a truncated total.
+
+Canonical report reconciliation and pricing also build the selected session's
+turns and request amounts. The view owns one bounded result, cancels previous
+selection work, and drops details on leaving the inspector. Its selection key
+includes the captured source, activity, price, reporting window, and time zone.
+There is no request-detail history cache. Native tool inspection retains its
+existing independent bounds and session-level fallback.
+
+Synthetic SQLite tests cover summary-only refreshes, selected-file isolation,
+request/payload/metadata/aggregate limits, stale sources, cancellation, reporting
+windows, and token/cost reconciliation. These source-level checks do not update
+the installed trial application or establish the menu proof below.
+
+## Installed trial baseline
 
 Verified the installed arm64 `0.79.0-session-trial3` application on macOS 15.7.9.
 Build source `93e9aec` contains feature source `590a2b1`; the release build used

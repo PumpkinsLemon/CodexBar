@@ -168,7 +168,7 @@
 "Local token history is unavailable or incomplete." = "Lokal tokenhistorik saknas eller är ofullständig.";
 "Could not add Codex account" = "Kunde inte lägga till Codex-konto";
 "Could not open Terminal for Gemini" = "Kunde inte öppna Terminal för Gemini";
-"Could not start claude /login" = "Kunde inte starta claude /login";
+"Claude OAuth credentials read failed: CodexBar's Claude OAuth cache is temporarily unavailable in macOS Keychain. Check that the login keychain is unlocked in Keychain Access, then retry Refresh." = "Det gick inte att läsa Claude OAuth-inloggningsuppgifterna: CodexBars Claude OAuth-cache är tillfälligt otillgänglig i macOS-nyckelringen. Kontrollera i Nyckelhanterare att inloggningsnyckelringen är upplåst och försök sedan uppdatera igen.";
 "Could not start codex login" = "Kunde inte starta codex login";
 "Could not switch system account" = "Kunde inte byta systemkonto";
 "Credits" = "Krediter";
@@ -1203,7 +1203,6 @@
 "Open T3 Chat Settings" = "Öppna T3 Chat-inställningar";
 "after next regen" = "efter nästa regenerering";
 "%.0f%% used" = "%.0f%% använt";
-"claude /login exited with status %d." = "claude /login avslutades med status %d.";
 "%d days of cost data" = "%d dagar med kostnadsdata";
 "Open legacy provider docs" = "Öppna äldre leverantörsdokumentation";
 "Secret access key" = "Hemlig åtkomstnyckel";
@@ -2113,6 +2112,8 @@
 "Poe usage history is unavailable." = "Användningshistoriken för Poe är inte tillgänglig.";
 "Stored in ~/.codexbar/config.json. Get your key from poe.com/api/keys." = "Lagrat i ~/.codexbar/config.json. Få din nyckel från poe.com/api/keys.";
 "Billing" = "Fakturering";
+"Invoice billing" = "Fakturabetalning";
+"Prepaid" = "Förbetalt";
 "Rate limit" = "Gräns för anropsfrekvens";
 "Billing and rate-limit data from the v0 Platform API" = "Faktureringsdata och gränser för anropsfrekvens från v0-plattformens API";
 "v0 cost history is not available via the Platform API." = "v0 kostnadshistorik är inte tillgänglig via plattformen API.";
@@ -2701,6 +2702,14 @@
 
 "monthly_daily_target_format" = "≈ %@ / dag för att räcka till återställningen";
 
+"Trae CN" = "Trae CN";
+"Show Trae CN usage" = "Visa Trae CN-användning";
+"Sign in to Trae CN at trae.cn, then refresh CodexBar." = "Logga in på Trae CN på trae.cn och uppdatera sedan CodexBar.";
+"Trae CN usage response format changed." = "Formatet på användningssvaret från Trae CN har ändrats.";
+"Trae CN request failed. Try refreshing later." = "Trae CN-förfrågan misslyckades. Försök uppdatera senare.";
+"Use --provider copilot." = "Använd --provider copilot.";
+"Config changed during login. Please try again." = "Konfigurationen ändrades under inloggningen. Försök igen.";
+
 // Session usage browser
 "Search sessions" = "Sök sessioner";
 "No matching sessions" = "Inga matchande sessioner";
@@ -2717,3 +2726,7 @@
 "Model requests" = "Modellförfrågningar";
 "Tool activity has no separate recorded token or monetary cost." = "Inga separata token- eller penningkostnader registreras för verktygsanrop.";
 "Request %d" = "Förfrågan %d";
+
+"Request details exceed the limit." = "Request details exceed the limit.";
+
+"Request details are unavailable. Refresh usage and try again." = "Request details are unavailable. Refresh usage and try again.";

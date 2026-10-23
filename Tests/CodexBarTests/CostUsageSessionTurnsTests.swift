@@ -42,7 +42,8 @@ struct CostUsageSessionTurnsTests {
     @Test
     func `incomplete request pricing and reasoning stay unknown without dropping tokens`() throws {
         let session = try Self.session([
-            Self.row(0, turn: "a"), Self.row(1, turn: "a", cost: nil, reasoning: nil),
+            Self.row(0, turn: "a"),
+            Self.row(1, turn: "a", cost: nil, reasoning: nil),
         ])
         let turn = try #require(session.turns.first)
         #expect(turn.totalTokens == 220)
@@ -65,7 +66,8 @@ struct CostUsageSessionTurnsTests {
     @Test
     func `turn usage follows the selected reporting window`() throws {
         let session = try Self.session([
-            Self.row(0, turn: "previous", day: "2026-10-20"), Self.row(1, turn: "today"),
+            Self.row(0, turn: "previous", day: "2026-10-20"),
+            Self.row(1, turn: "today"),
         ])
         #expect(session.totalTokens == 110)
         #expect(session.turns.map(\.turnID) == ["today"])
@@ -133,10 +135,19 @@ struct CostUsageSessionTurnsTests {
         var cache = CostUsageCache()
         cache.files = ["/synthetic/session.jsonl": usage]
         cache.days = days
-        return try #require(CostUsageScanner.buildCodexReportProjectionsFromCache(
+        let range = CostUsageScanner.CostUsageDayRange(since: now, until: now, calendar: calendar)
+        let summary = try #require(CostUsageScanner.buildCodexReportProjectionsFromCache(
             cache: cache,
-            range: .init(since: now, until: now, calendar: calendar),
+            range: range,
             modelsDevCatalog: ModelsDevCatalog(providers: [:]),
             includeProjects: false).sessions.first)
+        #expect(summary.turns.isEmpty)
+        var turns = CostUsageScanner.SessionTurns()
+        let report = CostUsageScanner.buildCodexReportFromCache(
+            cache: cache,
+            range: range,
+            modelsDevCatalog: ModelsDevCatalog(providers: [:]),
+            onPricedRow: { row, cost, complete in turns.add(row, cost: cost, isComplete: complete) })
+        return summary.withRequestDetails(turns.build(report: report))
     }
 }

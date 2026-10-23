@@ -43,8 +43,7 @@ extension CostUsageScanner {
             priorityTurns: priorityTurns,
             pricingResolver: pricingResolver)
         guard includeBreakdowns else { return (daily, [], []) }
-        var latestSessions: [String: (
-            usage: CostUsageFileUsage, report: CostUsageDailyReport, path: String, turns: [CostUsageSessionTurn])] = [:]
+        var latestSessions: [String: (usage: CostUsageFileUsage, report: CostUsageDailyReport, path: String)] = [:]
         let projectPathResolver = CodexCanonicalProjectPathResolver()
         var accumulatorsByProjectPath: [String: CodexProjectBreakdownAccumulator] = [:]
         for (filePath, usage) in cache.files {
@@ -59,23 +58,19 @@ extension CostUsageScanner {
             var fileCache = CostUsageCache()
             fileCache.files[filePath] = usage
             fileCache.days = usage.days
-            var turns = SessionTurns()
             let report = Self.buildCodexReportFromCache(
                 cache: fileCache,
                 range: range,
                 modelsDevCatalog: resolvedModelsDevCatalog,
                 priorityTurns: priorityTurns,
-                pricingResolver: pricingResolver,
-                onPricedRow: { row, cost, isComplete in
-                    turns.add(row, cost: cost, isComplete: isComplete)
-                })
+                pricingResolver: pricingResolver)
             let includeSession = sessionRoots.map {
                 Self.isWithinCodexRoots(fileURL: URL(fileURLWithPath: filePath), roots: $0)
             } ?? true
             if includeSession {
                 let id = usage.sessionId ?? URL(fileURLWithPath: filePath).deletingPathExtension().lastPathComponent
                 if !id.isEmpty, latestSessions[id].map({ $0.usage.mtimeUnixMs < usage.mtimeUnixMs }) ?? true {
-                    latestSessions[id] = (usage, report, filePath, turns.build(report: report))
+                    latestSessions[id] = (usage, report, filePath)
                 }
             }
             guard includeProjects, !report.data.isEmpty else { continue }
@@ -119,16 +114,19 @@ extension CostUsageScanner {
             }
             return lhs.name.localizedStandardCompare(rhs.name) == .orderedAscending
         }
+        let databaseURL = CostUsageStore.databaseURL(cacheRoot: modelsDevCacheRoot)
         let sessions = latestSessions.compactMap { id, file -> CostUsageSessionBreakdown? in
             let performanceSamples = Self.codexTurnPerformanceSamples(usage: file.usage, range: range)
             // A turn can complete after midnight with all billed requests on the previous day.
             guard !file.report.data.isEmpty || !performanceSamples.isEmpty else { return nil }
             return Self.codexSessionBreakdown(
-                source: SessionToolActivitySource(fileURL: URL(fileURLWithPath: file.path), sessionID: id),
+                detailSource: CostUsageSessionDetailSource(
+                    databaseURL: databaseURL,
+                    sessionSource: SessionToolActivitySource(fileURL: URL(fileURLWithPath: file.path), sessionID: id)),
                 usage: file.usage,
                 report: file.report,
                 projectPathResolver: projectPathResolver,
-                activity: (performanceSamples, file.turns))
+                performanceSamples: performanceSamples)
         }
         .sorted { lhs, rhs in
             if lhs.lastActivity != rhs.lastActivity {
@@ -140,13 +138,13 @@ extension CostUsageScanner {
     }
 
     private static func codexSessionBreakdown(
-        source: SessionToolActivitySource,
+        detailSource: CostUsageSessionDetailSource,
         usage: CostUsageFileUsage,
         report: CostUsageDailyReport,
         projectPathResolver: CodexCanonicalProjectPathResolver,
-        activity: (samples: [CostUsageTurnPerformanceSample], turns: [CostUsageSessionTurn]))
-        -> CostUsageSessionBreakdown
+        performanceSamples: [CostUsageTurnPerformanceSample]) -> CostUsageSessionBreakdown
     {
+        let source = detailSource.sessionSource
         let summary = report.summary
         let requestCounts = report.data.compactMap(\.requestCount)
         let resolvedProjectPath = usage.canonicalProjectPath
@@ -166,9 +164,9 @@ extension CostUsageScanner {
             projectPath: projectPath,
             projectName: projectPath.map { Self.codexProjectName(path: $0) },
             title: usage.codexSession?.title,
-            turnPerformanceSamples: activity.samples,
-            turns: activity.turns,
-            toolActivitySource: source)
+            turnPerformanceSamples: performanceSamples,
+            toolActivitySource: source,
+            requestDetailSource: detailSource)
         session.workingDirectory = usage.projectPath
         return session
     }

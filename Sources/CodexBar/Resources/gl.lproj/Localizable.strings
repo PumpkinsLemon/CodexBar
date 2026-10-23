@@ -149,7 +149,7 @@
 "Local token history is unavailable or incomplete." = "O historial local de tokens non está dispoñible ou está incompleto.";
 "Could not add Codex account" = "Non se puido engadir a conta de Codex";
 "Could not open Terminal for Gemini" = "Non se puido abrir o Terminal para Gemini";
-"Could not start claude /login" = "Non se puido iniciar claude /login";
+"Claude OAuth credentials read failed: CodexBar's Claude OAuth cache is temporarily unavailable in macOS Keychain. Check that the login keychain is unlocked in Keychain Access, then retry Refresh." = "Non se puideron ler as credenciais de Claude OAuth: a caché de Claude OAuth de CodexBar non está dispoñible temporalmente no chaveiro de macOS. Comproba que o chaveiro de inicio de sesión estea desbloqueado en Acceso a Chaveiros e volve actualizar.";
 "Could not start codex login" = "Non se puido iniciar codex login";
 "Could not switch system account" = "Non se puido cambiar a conta do sistema";
 "Credits" = "Créditos";
@@ -1126,7 +1126,6 @@
 "Windsurf session JSON bundle" = "Paquete JSON da sesión de Windsurf";
 "Workspace ID" = "ID do espazo de traballo";
 "Your StepFun platform password. Used to login and obtain a session token." = "O teu contrasinal da plataforma StepFun. Usado para iniciar sesión e obter un token de sesión.";
-"claude /login exited with status %d." = "claude /login saíu co estado %d.";
 "codex login exited with status %d." = "codex login rematou co estado %d.";
 "Cookie: …\n\nor paste a cURL capture from the Abacus AI dashboard" = "Cookie:…\n\nou pega unha captura de cURL desde o panel de control de Abacus AI";
 "Cookie: …\n\nor paste the __Secure-next-auth.session-token value" = "Cookie:…\n\nou pega o valor __Secure-next-auth.session-token";
@@ -2113,6 +2112,8 @@
 "Poe usage history is unavailable." = "O historial de uso de Poe non está dispoñible.";
 "Stored in ~/.codexbar/config.json. Get your key from poe.com/api/keys." = "Almacenado en ~/.codexbar/config.json. Obtén a túa chave de poe.com/api/keys.";
 "Billing" = "Facturación";
+"Invoice billing" = "Pagamento mediante factura";
+"Prepaid" = "Prepago";
 "Rate limit" = "Límite de taxa";
 "Billing and rate-limit data from the v0 Platform API" = "Datos de facturación e límite de tarifa da plataforma v0 API";
 "v0 cost history is not available via the Platform API." = "O historial de custos v0 non está dispoñible a través da plataforma API.";
@@ -2701,6 +2702,14 @@
 
 "monthly_daily_target_format" = "≈ %@ / día para que dure ata o restablecemento";
 
+"Trae CN" = "Trae CN";
+"Show Trae CN usage" = "Amosar o uso de Trae CN";
+"Sign in to Trae CN at trae.cn, then refresh CodexBar." = "Inicia sesión en Trae CN en trae.cn e despois actualiza CodexBar.";
+"Trae CN usage response format changed." = "Cambiou o formato da resposta de uso de Trae CN.";
+"Trae CN request failed. Try refreshing later." = "Fallou a solicitude a Trae CN. Tenta actualizar máis tarde.";
+"Use --provider copilot." = "Usa --provider copilot.";
+"Config changed during login. Please try again." = "A configuración cambiou durante o inicio de sesión. Téntao de novo.";
+
 // Session usage browser
 "Search sessions" = "Buscar sesións";
 "No matching sessions" = "Non hai sesións coincidentes";
@@ -2717,3 +2726,7 @@
 "Model requests" = "Solicitudes ao modelo";
 "Tool activity has no separate recorded token or monetary cost." = "Non se rexistra un custo independente en tokens ou cartos para as chamadas a ferramentas.";
 "Request %d" = "Solicitude %d";
+
+"Request details exceed the limit." = "Request details exceed the limit.";
+
+"Request details are unavailable. Refresh usage and try again." = "Request details are unavailable. Refresh usage and try again.";
