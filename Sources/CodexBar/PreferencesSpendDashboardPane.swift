@@ -1144,7 +1144,8 @@ struct SpendSessionRows: View {
             locale: codexBarLocalizedLocale(),
             calendar: self.group.calendar,
             timeZone: self.group.timeZone)
-        let label = range.lowerBound.formatted(format) + " – "
+        let label = first.reportingPeriod == .allTime ? L("All")
+            : range.lowerBound.formatted(format) + " – "
             + range.upperBound.addingTimeInterval(-0.001).formatted(format)
         return SessionUsageBrowserContext(
             providerName: self.sourceName(id),

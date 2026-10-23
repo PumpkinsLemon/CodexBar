@@ -5,6 +5,25 @@ import Testing
 
 struct SpendDashboardSessionRowTests {
     @Test @MainActor
+    func `all history label hides its sentinel date without narrowing request accounting`() throws {
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.timeZone = try #require(TimeZone(identifier: "Asia/Shanghai"))
+        let snapshot = Self.sessionInput(sessions: [Self.session(id: "all-history", cost: 1, tokens: 10)])
+            .snapshot.reporting(.allTime)
+        let model = SpendDashboardModel.build(
+            inputs: [.init(id: "codex", provider: .codex, displayName: "Codex", snapshot: snapshot)],
+            requestedDays: 30,
+            now: Self.now,
+            calendar: calendar)
+        let group = try #require(model.groups.first)
+        let context = try #require(SpendSessionRows(group: group, hidePersonalInfo: false).context(for: "codex"))
+        #expect(context.windowLabel == L("All"))
+        let range = SessionUsagePresentation.toolActivityRange(snapshot: snapshot, calendar: calendar)
+        #expect(context.activityRange == range)
+        #expect(context.sessions.first?.totalTokens == 10)
+    }
+
+    @Test @MainActor
     func `selected dashboard day keeps full period session totals details and dates aligned`() throws {
         var calendar = Calendar(identifier: .gregorian)
         calendar.timeZone = try #require(TimeZone(identifier: "Asia/Shanghai"))

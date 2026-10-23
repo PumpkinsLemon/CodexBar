@@ -368,6 +368,7 @@ struct SpendDashboardModel: Equatable, Sendable {
         var sourceName: String?
         var costMultiplier: Double = 1
         var reportingRange: Range<Date>?
+        var reportingPeriod: CostReportingPeriod?
     }
 
     struct HourlyPoint: Identifiable, Equatable, Sendable {
@@ -1511,8 +1512,7 @@ struct SpendDashboardModel: Equatable, Sendable {
     {
         let rows = summaries.flatMap { summary -> [SessionRow] in
             let reportingRange = SessionUsagePresentation.toolActivityRange(
-                snapshot: summary.input.snapshot,
-                calendar: calendar)
+                snapshot: summary.input.snapshot, calendar: calendar)
             return summary.input.snapshot.sessions.compactMap { session -> SessionRow? in
                 let day = calendar.startOfDay(for: session.lastActivity)
                 // Provider-specific by design: only the native Codex ledger has validated turn timing.
@@ -1550,7 +1550,8 @@ struct SpendDashboardModel: Equatable, Sendable {
                         turnPerformanceSamples: nativeSamples),
                     sourceName: summary.input.displayName,
                     costMultiplier: summary.costMultiplier,
-                    reportingRange: reportingRange)
+                    reportingRange: reportingRange,
+                    reportingPeriod: summary.input.snapshot.reportingPeriod)
             }
         }
         .sorted(by: Self.sessionOrder)
@@ -1575,9 +1576,7 @@ struct SpendDashboardModel: Equatable, Sendable {
         case (nil, _?): return false
         default: break
         }
-        if lhs.lastActivity != rhs.lastActivity {
-            return lhs.lastActivity > rhs.lastActivity
-        }
+        if lhs.lastActivity != rhs.lastActivity { return lhs.lastActivity > rhs.lastActivity }
         return lhs.id < rhs.id
     }
 

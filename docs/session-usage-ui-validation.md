@@ -36,6 +36,8 @@ summaries and request details. Selecting a dashboard chart day does not narrow
 these full-period accounting totals. Performance samples in the inspector also
 retain that period; chart-specific performance summaries can remain day scoped.
 Date labels format the last included instant before the exclusive upper bound.
+An all-history source uses the localized "All" label instead of formatting its
+internal unbounded-start sentinel as a year-1 date; the accounting range is unchanged.
 
 Synthetic SQLite tests cover summary-only refreshes, selected-file isolation,
 request/payload/metadata/aggregate limits, stale sources, cancellation, reporting
@@ -53,11 +55,43 @@ automated production-model/reader checks, not installed-app behavior evidence.
 | Reporting period October 20–21 in Asia/Shanghai | Label ended October 22; unselected tool range included an extra day | Label ends October 21; following midnight is excluded |
 | Persisted Priority turn with older standard row metadata | Selected requests summed to $0.00044, while the canonical summary was $0.00066 | Selected requests sum to the same $0.00066, preserving Priority evidence |
 | Billed turn A and tool-only turn B | Attributed billing suppressed the session-wide tools entry | All-operations entry exposes A and B; turn-specific entry remains scoped to A |
+| All-history source viewed inside a 30-day dashboard | Internal unbounded-start sentinel appeared as a year-1 date | Label displays "All" while retaining the full source range |
 
 The bounded reader also rejects an oversized pricing metadata envelope before
 copying or decoding it. The former navigation test that only round-tripped a
 request DTO was removed; reporting-scope assertions exercise the actual
 dashboard-to-inspector context factory instead.
+
+## Fresh installed application
+
+The arm64 `0.80.0-session-trial4 (173)` application was built from trial commit
+`73ef94c`, which contains feature commit `4be3874` plus the Fork-only trial
+workflow. The [full release build](https://github.com/PumpkinsLemon/CodexBar/actions/runs/39907787595)
+passed with Xcode 26.6 and Swift 6.3.3, including app, CLI, widget, deep strict
+code-signature verification, and the packaging resource/startup smoke checks.
+The downloaded artifact's commit and checksums were verified before installation.
+The actual application's About pane confirmed that version and build number.
+
+Native controls in that freshly installed Settings window established:
+
+| Installed-app check | Observed result |
+| --- | --- |
+| Open Usage & Spend, then Sessions | Local session summaries and their accounting detail rendered. |
+| View a session while the local index was updating | The unavailable-detail state preserved the summary; after the refresh completed and Sessions was reopened, native turns loaded. |
+| Expand a native turn | Request count and input/cache/output/reasoning amounts rendered with the turn's estimated cost. |
+| Expand that turn's Model requests disclosure | Individual requests rendered with their model, estimated cost, input/cache/output, timestamp, and reasoning subset. |
+
+These are actual installed-window observations, not synthetic component renders.
+Private session identities, prompts, timestamps, paths, and amounts are omitted
+from this report; no new screenshots have been published. The year-1 all-history
+label was discovered in this application and corrected in the subsequent source
+change, with a regression through the production context factory. Trial4 does
+not contain that later label correction.
+
+Fast selection switching, forced limit/cancellation behavior, full request-to-summary
+reconciliation, and the installed menu path still require runtime proof; the
+focused tests cover their reader/model contracts. The GUI attempt was interrupted
+by the Mac locking. Do not treat opening a disclosure as proof of those other paths.
 
 ## Installed trial baseline
 
