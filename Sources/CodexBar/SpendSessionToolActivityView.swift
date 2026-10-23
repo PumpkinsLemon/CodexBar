@@ -2,9 +2,9 @@ import CodexBarCore
 import SwiftUI
 
 func spendToolActivityRange(group: SpendDashboardModel.CurrencyGroup) -> Range<Date> {
-    let start = group.selectedDay.map { group.calendar.startOfDay(for: $0) } ?? group.chartDomain.lowerBound
-    let last = group.selectedDay.map { group.calendar.startOfDay(for: $0) } ?? group.chartDomain.upperBound
-    let end = group.calendar.date(byAdding: .day, value: 1, to: last) ?? last.addingTimeInterval(86400)
+    guard let day = group.selectedDay else { return group.chartDomain.lowerBound..<group.chartDomain.upperBound }
+    let start = group.calendar.startOfDay(for: day)
+    let end = group.calendar.date(byAdding: .day, value: 1, to: start) ?? start.addingTimeInterval(86400)
     return start..<end
 }
 

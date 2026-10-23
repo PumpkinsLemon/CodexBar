@@ -326,8 +326,7 @@ struct SessionUsageBrowser: View {
         turnID: String? = nil) -> SpendSessionToolActivityView?
     {
         guard let source = session.toolActivitySource, let range = self.context.activityRange else { return nil }
-        // Without attributed usage turns, keep native activity reachable at the session level.
-        guard turnID != nil || !session.turns.contains(where: { $0.turnID != nil }) else { return nil }
+        // Keep an all-operations route: tools can belong to turns with no retained billed request.
         return SpendSessionToolActivityView(
             source: source,
             lastActivity: session.lastActivity,

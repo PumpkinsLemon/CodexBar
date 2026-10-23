@@ -9,6 +9,22 @@ import CSQLite3
 
 struct CostUsageSessionDetailsTests {
     @Test
+    func `selected requests retain resolved priority pricing over older standard row metadata`() throws {
+        let fixture = try Fixture(priority: true)
+        defer { fixture.remove() }
+        let summary = try #require(CostUsageScanner.buildCodexReportProjectionsFromCache(
+            cache: fixture.cache,
+            range: fixture.dayRange,
+            modelsDevCatalog: ModelsDevCatalog(providers: [:]),
+            modelsDevCacheRoot: fixture.root).sessions.first)
+        let details = try fixture.read()
+        let costs = details.turns.compactMap(\.costUSD)
+        #expect(costs.count == 2)
+        #expect(abs(costs.reduce(0, +) - (summary.costUSD ?? -1)) < 1e-12)
+        #expect((costs.first ?? 0) > (costs.last ?? 0))
+    }
+
+    @Test
     func `ordinary refresh retains summaries and only selected details are decoded`() throws {
         let fixture = try Fixture(fileCount: 3)
         defer { fixture.remove() }
@@ -60,6 +76,17 @@ struct CostUsageSessionDetailsTests {
         limits = .init()
         limits.aggregates = 0
         #expect(throws: CostUsageSessionDetailError.limitExceeded) { try fixture.read(limits: limits) }
+    }
+
+    @Test
+    func `persisted priority metadata is byte bounded before copying or decoding`() throws {
+        let fixture = try Fixture(priority: true)
+        defer { fixture.remove() }
+        var limits = CostUsageSessionDetailLoader.Limits()
+        limits.pricingMetadataBytes = 1
+        #expect(throws: CostUsageSessionDetailError.limitExceeded) { try fixture.read(limits: limits) }
+        try fixture.execute("UPDATE scan_metadata SET payload = zeroblob(1048577) WHERE id = 1")
+        #expect(throws: CostUsageSessionDetailError.limitExceeded) { try fixture.read() }
     }
 
     @Test
@@ -192,7 +219,7 @@ struct CostUsageSessionDetailsTests {
         let cache: CostUsageCache
         let source: CostUsageSessionDetailSource
 
-        init(fileCount: Int = 1) throws {
+        init(fileCount: Int = 1, priority: Bool = false) throws {
             self.root = FileManager.default.temporaryDirectory.appendingPathComponent("session-details-\(UUID())")
             var calendar = Calendar(identifier: .gregorian)
             calendar.timeZone = try #require(TimeZone(identifier: "Asia/Shanghai"))
@@ -203,9 +230,18 @@ struct CostUsageSessionDetailsTests {
             self.range = start..<start.addingTimeInterval(86400)
             self.dayRange = .init(since: self.now, until: self.now, calendar: calendar)
             let day = self.dayRange.sinceKey
-            let model = "fictional-selected-model"
+            let model = priority ? "gpt-5.4" : "fictional-selected-model"
             var cache = CostUsageCache()
             cache.timeZoneIdentifier = calendar.timeZone.identifier
+            if priority {
+                cache.codexResolvedPriorityTurns = [
+                    "turn-0": .init(
+                        threadID: "session-0",
+                        turnID: "turn-0",
+                        model: model,
+                        timestamp: "2026-10-21T15:00:00+08:00"),
+                ]
+            }
             for index in 0..<fileCount {
                 let rows = (0..<2).map { event in
                     CostUsageScanner.CodexUsageRow(
@@ -218,7 +254,9 @@ struct CostUsageSessionDetailsTests {
                         cached: 80,
                         output: 10,
                         reasoning: 4,
-                        knownCostNanos: 100_000_000)
+                        knownCostNanos: priority ? nil : 100_000_000,
+                        pricingModel: model,
+                        pricingMode: "standard")
                 }
                 let usage = CostUsageScanner.makeFileUsage(
                     mtimeUnixMs: Int64(self.now.timeIntervalSince1970 * 1000),

@@ -21,16 +21,43 @@ with at most 1 MiB of model names. A limit error leaves the session summary visi
 and labels request details unavailable, without presenting a truncated total.
 
 Canonical report reconciliation and pricing also build the selected session's
-turns and request amounts. The view owns one bounded result, cancels previous
+turns and request amounts. Persisted Priority evidence is read inside the same
+transaction, with a separate 1 MiB limit on its serialized metadata envelope;
+only the selected requests' turn keys are decoded into pricing records. The view
+owns one bounded result, cancels previous
 selection work, and drops details on leaving the inspector. Its selection key
 includes the captured source, activity, price, reporting window, and time zone.
 There is no request-detail history cache. Native tool inspection retains its
-existing independent bounds and session-level fallback.
+existing independent bounds and an all-operations entry alongside individual
+turn lists, including operations without a retained billed request.
+
+The inspector uses the source snapshot's full reporting period for both session
+summaries and request details. Selecting a dashboard chart day does not narrow
+these full-period accounting totals. Performance samples in the inspector also
+retain that period; chart-specific performance summaries can remain day scoped.
+Date labels format the last included instant before the exclusive upper bound.
 
 Synthetic SQLite tests cover summary-only refreshes, selected-file isolation,
 request/payload/metadata/aggregate limits, stale sources, cancellation, reporting
 windows, and token/cost reconciliation. These source-level checks do not update
 the installed trial application or establish the menu proof below.
+
+## Accounting review regressions
+
+Synthetic cases reproduced all four reviewed defects before the fix. These are
+automated production-model/reader checks, not installed-app behavior evidence.
+
+| Case | Before | After |
+| --- | --- | --- |
+| Two-day session, selecting either chart day | Full-period 300-token summary paired with a one-day request range | Summary, requests, performance, and tools retain the source's same two-day period |
+| Reporting period October 20–21 in Asia/Shanghai | Label ended October 22; unselected tool range included an extra day | Label ends October 21; following midnight is excluded |
+| Persisted Priority turn with older standard row metadata | Selected requests summed to $0.00044, while the canonical summary was $0.00066 | Selected requests sum to the same $0.00066, preserving Priority evidence |
+| Billed turn A and tool-only turn B | Attributed billing suppressed the session-wide tools entry | All-operations entry exposes A and B; turn-specific entry remains scoped to A |
+
+The bounded reader also rejects an oversized pricing metadata envelope before
+copying or decoding it. The former navigation test that only round-tripped a
+request DTO was removed; reporting-scope assertions exercise the actual
+dashboard-to-inspector context factory instead.
 
 ## Installed trial baseline
 

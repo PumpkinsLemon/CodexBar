@@ -36,6 +36,7 @@ public enum CostUsageSessionDetailLoader {
         var requests = 5000
         var payloadBytes = 8 * 1024 * 1024
         var metadataBytes = 1024 * 1024
+        var pricingMetadataBytes = 1024 * 1024
         var aggregates = 5000
     }
 
@@ -162,12 +163,84 @@ public enum CostUsageSessionDetailLoader {
             discoveryState: nil,
             lookbackState: nil,
             accumulators: [])
-        return CostUsageStore.decodeCodexCache(
+        var cache = CostUsageStore.decodeCodexCache(
             from: snapshot,
             recorder: nil,
             tokenSnapshotsLoaded: false,
             decodedUsageRows: [path: rows],
             includesRequestLedgerState: false)
+        cache.codexResolvedPriorityTurns = try self.readPriorityEvidence(
+            database,
+            turnIDs: Set(rows.compactMap(\.turnID)),
+            maximumBytes: limits.pricingMetadataBytes)
+        return cache
+    }
+
+    private struct PricingPayload: Decodable {
+        let priorityTurnStatePayload: Data?
+    }
+
+    private struct SelectedPriorityEvidence: Decodable {
+        static let selectionKey = CodingUserInfoKey(rawValue: "selectedSessionTurnIDs")!
+        let turns: [String: CostUsageScanner.CodexPriorityTurnMetadata]
+
+        private enum CodingKeys: String, CodingKey { case resolvedTurns }
+        private struct TurnKey: CodingKey {
+            let stringValue: String
+            var intValue: Int? {
+                nil
+            }
+
+            init(stringValue: String) { self.stringValue = stringValue }
+            init?(intValue: Int) { nil }
+        }
+
+        init(from decoder: Decoder) throws {
+            let root = try decoder.container(keyedBy: CodingKeys.self)
+            guard root.contains(.resolvedTurns), try !root.decodeNil(forKey: .resolvedTurns) else {
+                self.turns = [:]
+                return
+            }
+            let values = try root.nestedContainer(keyedBy: TurnKey.self, forKey: .resolvedTurns)
+            let selected = decoder.userInfo[Self.selectionKey] as? Set<String> ?? []
+            var turns: [String: CostUsageScanner.CodexPriorityTurnMetadata] = [:]
+            for id in selected {
+                if let value = try values.decodeIfPresent(
+                    CostUsageScanner.CodexPriorityTurnMetadata.self,
+                    forKey: TurnKey(stringValue: id))
+                {
+                    turns[id] = value
+                }
+            }
+            self.turns = turns
+        }
+    }
+
+    private static func readPriorityEvidence(
+        _ database: OpaquePointer,
+        turnIDs: Set<String>,
+        maximumBytes: Int) throws -> [String: CostUsageScanner.CodexPriorityTurnMetadata]
+    {
+        guard !turnIDs.isEmpty else { return [:] }
+        let preflight = try CostUsageStore.prepare(database, "SELECT length(payload) FROM scan_metadata WHERE id = 1")
+        defer { sqlite3_finalize(preflight) }
+        let status = sqlite3_step(preflight)
+        if status == SQLITE_DONE { return [:] }
+        guard status == SQLITE_ROW else { throw CostUsageSessionDetailError.unavailable }
+        guard maximumBytes >= 0, sqlite3_column_int64(preflight, 0) <= Int64(maximumBytes) else {
+            throw CostUsageSessionDetailError.limitExceeded
+        }
+        // Bound the serialized envelope before copying it. Decode only the selected turn keys,
+        // never the historical cursor, inventory, previous report, or full resolved-turn dictionary.
+        let statement = try CostUsageStore.prepare(database, "SELECT payload FROM scan_metadata WHERE id = 1")
+        defer { sqlite3_finalize(statement) }
+        guard sqlite3_step(statement) == SQLITE_ROW, let payload = CostUsageStore.columnData(statement, at: 0)
+        else { throw CostUsageSessionDetailError.unavailable }
+        let decoder = JSONDecoder()
+        guard let pricing = try decoder.decode(PricingPayload.self, from: payload).priorityTurnStatePayload
+        else { return [:] }
+        decoder.userInfo[SelectedPriorityEvidence.selectionKey] = turnIDs
+        return try decoder.decode(SelectedPriorityEvidence.self, from: pricing).turns
     }
 
     private static func validateFile(
