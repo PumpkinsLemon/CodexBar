@@ -6,6 +6,24 @@ import Testing
 @MainActor
 struct SettingsPersistenceContractTests {
     @Test
+    func `Codex reset credit reminders default off persist and round trip through portable preferences`() throws {
+        let defaults = InMemoryUserDefaults()
+        let settings = testSettingsStore(suiteName: #function, userDefaults: defaults)
+        #expect(!settings.codexResetCreditExpiryNotificationsEnabled)
+        settings.codexResetCreditExpiryNotificationsEnabled = true
+        let reloaded = testSettingsStore(suiteName: #function, userDefaults: defaults)
+        #expect(reloaded.codexResetCreditExpiryNotificationsEnabled)
+        let target = testSettingsStore(suiteName: #function, userDefaults: InMemoryUserDefaults())
+        try target.importPreferences(settings.exportPreferences())
+        #expect(target.codexResetCreditExpiryNotificationsEnabled)
+        settings.codexResetCreditExpiryNotificationsEnabled = false
+        #expect(!testSettingsStore(suiteName: #function, userDefaults: defaults)
+            .codexResetCreditExpiryNotificationsEnabled)
+        try target.importPreferences(settings.exportPreferences())
+        #expect(!target.codexResetCreditExpiryNotificationsEnabled)
+    }
+
+    @Test
     func `older clients sorting changes remain authoritative on restart`() {
         let defaults = InMemoryUserDefaults()
         defaults.set("custom", forKey: "providerListSortMode")

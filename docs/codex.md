@@ -51,8 +51,13 @@ Usage source picker:
 - The app reads reset-credit inventory once per refresh with a best-effort
   `GET https://chatgpt.com/backend-api/wham/rate-limit-reset-credits` using the same account-scoped OAuth context;
   the CLI requests it only when optional credits are included.
-- The menu and provider settings list every still-available expiry, while the optional credits setting controls
-  nearing-expiry notifications. CodexBar does not redeem or modify reset credits.
+- The menu and provider settings list every still-available expiry. Settings → Notifications → **Codex reset credit
+  expiry** independently enables reminders, off by default. On usage refresh, each available credit is announced
+  once at 1 day, 12 hours, 1 hour, 30 minutes, and 10 minutes before expiry. Refreshes and app restarts share
+  bounded, hashed receipts; adding another credit does not repeat an existing credit's reminder. A late refresh
+  announces only the closest threshold, without replaying older reminders. Reminders require CodexBar to be
+  running and usage to refresh; manual refresh mode checks only when refreshed. Used, redeeming, expired, and
+  no-expiry credits are excluded. CodexBar does not redeem or modify reset credits.
 - `rate_limit.primary_window` / `secondary_window` map to the session/weekly lanes.
 - When a response explicitly reports a fixed 30-day window (`limit_window_seconds: 2592000`),
   pace uses those 43,200 minutes rather than inferring a calendar month from the reset date.

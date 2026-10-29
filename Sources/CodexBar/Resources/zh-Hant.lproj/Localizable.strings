@@ -2738,3 +2738,7 @@
 "Show this Mac's recorded OpenCode usage in Codex history. Off by default; scoped or alternate CODEX_HOME locations always stay excluded." = "在 Codex 歷史記錄中顯示此 Mac 上記錄的 OpenCode 用量。預設關閉；一律排除限定範圍或其他 CODEX_HOME 位置。";
 "Auto uses the active saved session, otherwise an API key or browser cookies." = "自動使用目前啟用的已儲存工作階段，否則使用 API 金鑰或瀏覽器 Cookie。";
 "Store multiple Command Code subscription sessions." = "儲存多個 Command Code 訂閱工作階段。";
+
+"codex_reset_credit_expiry_notifications_title" = "Codex 重置卡到期提醒";
+
+"codex_reset_credit_expiry_notifications_subtitle" = "在用量重新整理時檢查，到期前 1 天、12 小時、1 小時、30 分鐘和 10 分鐘各提醒一次。";

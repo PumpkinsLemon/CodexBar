@@ -2763,3 +2763,7 @@
 "Show this Mac's recorded OpenCode usage in Codex history. Off by default; scoped or alternate CODEX_HOME locations always stay excluded." = "Bu Mac’te kaydedilen OpenCode kullanımını Codex geçmişinde gösterir. Varsayılan olarak kapalıdır; kapsamı sınırlandırılmış veya alternatif CODEX_HOME konumları her zaman hariç tutulur.";
 "Auto uses the active saved session, otherwise an API key or browser cookies." = "Otomatik, etkin kayıtlı oturumu kullanır; yoksa bir API anahtarı veya tarayıcı çerezlerini kullanır.";
 "Store multiple Command Code subscription sessions." = "Birden fazla Command Code abonelik oturumunu depolayın.";
+
+"codex_reset_credit_expiry_notifications_title" = "Codex sıfırlama kredisi süresi";
+
+"codex_reset_credit_expiry_notifications_subtitle" = "Kullanım yenilendiğinde kontrol et ve sona ermeden 1 gün, 12 saat, 1 saat, 30 dakika ve 10 dakika önce birer kez bildir.";

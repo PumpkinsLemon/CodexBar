@@ -2765,3 +2765,7 @@
 "OpenCode local history" = "OpenCode local history";
 
 "Show this Mac's recorded OpenCode usage in Codex history. Off by default; scoped or alternate CODEX_HOME locations always stay excluded." = "Show this Mac's recorded OpenCode usage in Codex history. Off by default; scoped or alternate CODEX_HOME locations always stay excluded.";
+
+"codex_reset_credit_expiry_notifications_title" = "Codex reset credit expiry";
+
+"codex_reset_credit_expiry_notifications_subtitle" = "Check on usage refresh and notify once at 1 day, 12 hours, 1 hour, 30 minutes, and 10 minutes before expiry.";

@@ -17,13 +17,21 @@ extension UsageStore {
     }
 
     func handleCodexResetCreditNotifications(snapshot: UsageSnapshot) {
-        guard self.settings.showOptionalCreditsAndExtraUsage,
-              let resetCredits = snapshot.codexResetCredits
+        guard let resetCredits = snapshot.codexResetCredits
         else {
             return
         }
-        CodexResetCreditExpiryNotifier().postExpiringCreditsIfNeeded(
+        CodexResetCreditExpiryNotifier(userDefaults: self.settings.userDefaults) { [weak self] prefix, title, body in
+            AppNotifications.shared.post(
+                idPrefix: prefix,
+                title: title,
+                body: body,
+                isCurrent: { [weak self] in
+                    self?.settings.codexResetCreditExpiryNotificationsEnabled == true && self?.isEnabled(.codex) == true
+                })
+        }.postExpiringCreditsIfNeeded(
             snapshot: resetCredits,
+            enabled: self.settings.codexResetCreditExpiryNotificationsEnabled,
             resetStyle: self.settings.resetTimeDisplayStyle)
     }
 

@@ -2764,3 +2764,7 @@
 "Show this Mac's recorded OpenCode usage in Codex history. Off by default; scoped or alternate CODEX_HOME locations always stay excluded." = "مصرف ثبت‌شدهٔ OpenCode در این Mac را در تاریخچهٔ Codex نمایش می‌دهد. به‌طور پیش‌فرض خاموش است؛ مسیرهای CODEX_HOME با دامنهٔ محدود یا جایگزین همیشه مستثنا هستند.";
 "Auto uses the active saved session, otherwise an API key or browser cookies." = "حالت خودکار از نشست ذخیره‌شدهٔ فعال استفاده می‌کند؛ در غیر این صورت از کلید API یا کوکی‌های مرورگر استفاده می‌کند.";
 "Store multiple Command Code subscription sessions." = "چندین نشست اشتراک Command Code را ذخیره کنید.";
+
+"codex_reset_credit_expiry_notifications_title" = "انقضای اعتبار بازنشانی Codex";
+
+"codex_reset_credit_expiry_notifications_subtitle" = "هنگام به‌روزرسانی مصرف بررسی شود و یک روز، ۱۲ ساعت، یک ساعت، ۳۰ دقیقه و ۱۰ دقیقه پیش از انقضا یک بار اعلان داده شود.";

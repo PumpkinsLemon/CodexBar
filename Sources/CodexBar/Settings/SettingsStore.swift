@@ -587,6 +587,8 @@ extension SettingsStore {
             quotaWarningNotificationsEnabled: quotaWarnings.notificationsEnabled,
             predictivePaceWarningNotificationsEnabled: notificationDefaults.predictivePaceWarningNotificationsEnabled,
             limitResetNotificationsEnabled: notificationDefaults.limitResetNotificationsEnabled,
+            codexResetCreditExpiryNotificationsEnabled: userDefaults.bool(
+                forKey: "codexResetCreditExpiryNotificationsEnabled"),
             quotaWarningThresholdsRaw: quotaWarnings.thresholdsRaw,
             quotaWarningSessionThresholdsRaw: quotaWarnings.sessionThresholdsRaw,
             quotaWarningWeeklyThresholdsRaw: quotaWarnings.weeklyThresholdsRaw,

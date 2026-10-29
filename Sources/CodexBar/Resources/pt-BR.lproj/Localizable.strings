@@ -2760,3 +2760,7 @@
 "Show this Mac's recorded OpenCode usage in Codex history. Off by default; scoped or alternate CODEX_HOME locations always stay excluded." = "Mostra no histórico do Codex o uso do OpenCode registrado neste Mac. Desativado por padrão; locais CODEX_HOME com escopo restrito ou alternativos são sempre excluídos.";
 "Auto uses the active saved session, otherwise an API key or browser cookies." = "Automático usa a sessão salva ativa; caso contrário, uma chave API ou cookies do navegador.";
 "Store multiple Command Code subscription sessions." = "Armazena várias sessões de assinatura do Command Code.";
+
+"codex_reset_credit_expiry_notifications_title" = "Expiração dos créditos de redefinição do Codex";
+
+"codex_reset_credit_expiry_notifications_subtitle" = "Verificar ao atualizar o uso e avisar uma vez a 1 dia, 12 horas, 1 hora, 30 minutos e 10 minutos da expiração.";
