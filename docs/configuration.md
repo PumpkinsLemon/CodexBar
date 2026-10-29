@@ -89,6 +89,10 @@ between `0.1` and `300`. Hook processes receive only a small allowlist of genera
 event's `CODEXBAR_*` variables; CodexBar provider keys and tokens are not inherited. The same event is also encoded as
 JSON on stdin. Only configure executables you trust.
 
+Installed user plugins can be selected by manifest ID (or by an any-provider rule). Their successful, current app
+refreshes support `usage_updated`, `quota_low`, `quota_reached`, and `quota_reset` through the same command and payload
+contract. See [plugin hooks](plugins.md#external-hooks) for window semantics and lifecycle behavior.
+
 Events:
 
 - `quota_low`: a quota lane crosses the rule's `threshold` upward. Thresholds are usage fractions greater than `0`
@@ -195,6 +199,12 @@ Example placeholder config:
 }
 ```
 
+Or write the same two fields from the CLI, which also works where the app is unavailable (for example on Linux):
+
+```bash
+pbpaste | codexbar config set-cookie --provider claude --stdin
+```
+
 Validate after editing:
 
 ```bash
@@ -278,7 +288,9 @@ z.ai team accounts also use `usageScope`, `organizationId`, and `workspaceID`; s
 See the [generated provider ID list](provider-ids.md), sourced from `UsageProvider` in enum order.
 
 ## Ordering
-The order of `providers` controls display/order in the app and CLI. Reorder the array to change ordering.
+The order of `providers` controls display/order in the app and CLI. Reorder the array to change ordering. The Settings sidebar also supports dragging providers to reorder them.
+Its Undo banner dismisses after four seconds of inactivity. Hovering, keyboard focus, or VoiceOver focus pauses
+the timer, and a new reorder restarts it. Reduce Motion disables the fade animation.
 
 ## iCloud sync
 The three sync sub-options are disabled while the main sync switch is off, iCloud is unavailable, or a newer app version is required. Their saved choices are retained when sync is turned off and restored when it is enabled again.

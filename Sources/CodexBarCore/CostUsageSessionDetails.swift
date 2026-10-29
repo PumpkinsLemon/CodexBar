@@ -10,18 +10,13 @@ import CSQLite3
 public struct CostUsageSessionDetailSource: Sendable, Equatable, Hashable {
     public let databaseURL: URL
     public let sessionSource: SessionToolActivitySource
+    public let parsedBytes: Int64?
 
-    public init(databaseURL: URL, sessionSource: SessionToolActivitySource) {
+    public init(databaseURL: URL, sessionSource: SessionToolActivitySource, parsedBytes: Int64?) {
         self.databaseURL = databaseURL
         self.sessionSource = sessionSource
+        self.parsedBytes = parsedBytes
     }
-}
-
-public struct CostUsageSessionDetails: Sendable {
-    public let source: CostUsageSessionDetailSource
-    public let range: Range<Date>
-    public let timeZoneIdentifier: String
-    public let turns: [CostUsageSessionTurn]
 }
 
 public enum CostUsageSessionDetailError: Error, Sendable, Equatable {
@@ -44,7 +39,7 @@ public enum CostUsageSessionDetailLoader {
         source: CostUsageSessionDetailSource,
         lastActivity: Date,
         range: Range<Date>,
-        timeZone: TimeZone) async throws -> CostUsageSessionDetails
+        timeZone: TimeZone) async throws -> [CostUsageSessionTurn]
     {
         try await CostUsageScanExecutor.run(on: self.queue) { checkCancellation in
             try self.read(
@@ -63,7 +58,7 @@ public enum CostUsageSessionDetailLoader {
         timeZone: TimeZone,
         limits: Limits = Limits(),
         catalog: ModelsDevCatalog? = nil,
-        checkCancellation: () throws -> Void = {}) throws -> CostUsageSessionDetails
+        checkCancellation: () throws -> Void = {}) throws -> [CostUsageSessionTurn]
     {
         try checkCancellation()
         guard range.lowerBound < range.upperBound else { throw CostUsageSessionDetailError.unavailable }
@@ -101,11 +96,7 @@ public enum CostUsageSessionDetailLoader {
             modelsDevCacheRoot: cacheRoot,
             onPricedRow: { row, cost, complete in turns.add(row, cost: cost, isComplete: complete) })
         try checkCancellation()
-        return CostUsageSessionDetails(
-            source: source,
-            range: range,
-            timeZoneIdentifier: timeZone.identifier,
-            turns: turns.build(report: report))
+        return turns.build(report: report)
     }
 
     private static func readSelectedCache(
@@ -250,14 +241,17 @@ public enum CostUsageSessionDetailLoader {
         limits: Limits) throws -> Int64
     {
         let statement = try CostUsageStore.prepare(database, """
-        SELECT id, mtime_ms, length(scan_state) FROM files WHERE path = ? AND session_id = ?
+        SELECT id, mtime_ms, length(scan_state), parsed_bytes FROM files WHERE path = ? AND session_id = ?
         """)
         defer { sqlite3_finalize(statement) }
         CostUsageStore.bind(source.sessionSource.fileURL.path, to: statement, at: 1)
         CostUsageStore.bind(source.sessionSource.sessionID, to: statement, at: 2)
         guard sqlite3_step(statement) == SQLITE_ROW else { throw CostUsageSessionDetailError.unavailable }
         let recorded = Double(sqlite3_column_int64(statement, 1)) / 1000
-        guard abs(recorded - lastActivity.timeIntervalSince1970) < 0.001 else {
+        // Catch-up advances stored rows without changing the rollout's modification time.
+        guard abs(recorded - lastActivity.timeIntervalSince1970) < 0.001,
+              CostUsageStore.columnInt64(statement, at: 3) == source.parsedBytes
+        else {
             throw CostUsageSessionDetailError.sourceChanged
         }
         guard sqlite3_column_int64(statement, 2) <= Int64(limits.metadataBytes) else {

@@ -742,6 +742,8 @@
 "acknowledgements_authors" = "Penulis";
 "acknowledgements_license" = "Lisensi";
 "check_updates_auto" = "Periksa pembaruan secara otomatis";
+"install_updates_auto" = "Unduh dan instal pembaruan secara otomatis";
+"install_updates_auto_subtitle" = "Jika nonaktif, Anda akan ditanya sebelum versi baru diinstal.";
 "update_channel" = "Saluran Pembaruan";
 "check_for_updates" = "Periksa Pembaruan…";
 "updates_unavailable" = "Pembaruan tidak tersedia di build ini.";
@@ -2365,6 +2367,7 @@
 "Core Monthly" = "Inti Bulanan";
 "Bobcoin usage" = "Penggunaan Bobcoin";
 "Code 7-day" = "Kode 7 hari Kuota";
+"Other features" = "Fitur lainnya";
 "Quota services" = "Layanan Kuota";
 "Billing history" = "Riwayat penagihan";
 "Renews" = "Memperbarui";
@@ -2574,7 +2577,6 @@
 "Also restores the provider order in the menu bar. Can be undone." = "Juga memulihkan urutan penyedia di bar menu. Dapat diurungkan.";
 "Local Codex details; excluded from combined totals." = "Detail Codex lokal; tidak termasuk dalam total gabungan.";
 
-"Auto uses an API key when configured, otherwise browser cookies." = "Auto uses an API key when configured, otherwise browser cookies.";
 "Stored in the CodexBar config file. You can also set COMMAND_CODE_API_KEY." = "Stored in the CodexBar config file. You can also set COMMAND_CODE_API_KEY.";
 /* OpenAI organization rate limits and live usage */
 "%@ tokens · %@ requests" = "%@ token · %@ permintaan";
@@ -2730,6 +2732,37 @@
 "Tool activity has no separate recorded token or monetary cost." = "Panggilan alat tidak memiliki biaya token atau uang yang tercatat secara terpisah.";
 "Request %d" = "Permintaan %d";
 
-"Request details exceed the limit." = "Request details exceed the limit.";
+"Request details exceed the limit." = "Detail permintaan melebihi batas.";
 
-"Request details are unavailable. Refresh usage and try again." = "Request details are unavailable. Refresh usage and try again.";
+"Request details are unavailable. Refresh usage and try again." = "Detail permintaan tidak tersedia. Muat ulang penggunaan dan coba lagi.";
+"Primary" = "Utama";
+"Secondary" = "Sekunder";
+"Tertiary" = "Tersier";
+
+/* Chatbox AI */
+"Chatbox AI" = "Chatbox AI";
+"Show Chatbox AI usage" = "Tampilkan penggunaan Chatbox AI";
+"Chatbox AI license key is invalid. Update it in Settings." = "Kunci lisensi Chatbox AI tidak valid. Perbarui di Pengaturan.";
+"Chatbox AI denied access. Check your license." = "Chatbox AI menolak akses. Periksa lisensi Anda.";
+"Chatbox AI is rate limiting requests. Try again later." = "Chatbox AI membatasi frekuensi permintaan. Coba lagi nanti.";
+"Chatbox AI request failed. Try refreshing later." = "Permintaan Chatbox AI gagal. Coba segarkan lagi nanti.";
+"Chatbox AI returned an unrecognized response. Update CodexBar and try again." = "Chatbox AI mengembalikan respons yang tidak dikenali. Perbarui CodexBar dan coba lagi.";
+
+/* abliteration.ai */
+"abliteration.ai" = "abliteration.ai";
+"Show abliteration.ai usage" = "Tampilkan penggunaan abliteration.ai";
+"abliteration.ai is rate limiting requests. Try again later." = "abliteration.ai membatasi frekuensi permintaan. Coba lagi nanti.";
+"abliteration.ai request failed. Try refreshing later." = "Permintaan abliteration.ai gagal. Coba segarkan lagi nanti.";
+"abliteration.ai returned an unrecognized response. Update CodexBar and try again." = "abliteration.ai mengembalikan respons yang tidak dikenali. Perbarui CodexBar dan coba lagi.";
+"Check your API key in Settings." = "Periksa kunci API Anda di Pengaturan.";
+"Kimi Code" = "Kimi Code";
+
+"OpenCode local history" = "Riwayat lokal OpenCode";
+
+"Show this Mac's recorded OpenCode usage in Codex history. Off by default; scoped or alternate CODEX_HOME locations always stay excluded." = "Menampilkan penggunaan OpenCode yang tercatat di Mac ini dalam riwayat Codex. Nonaktif secara bawaan; lokasi CODEX_HOME dengan cakupan terbatas atau lokasi alternatif selalu dikecualikan.";
+"Auto uses the active saved session, otherwise an API key or browser cookies." = "Otomatis menggunakan sesi tersimpan yang aktif, atau kunci API atau cookie browser jika tidak ada sesi yang aktif.";
+"Store multiple Command Code subscription sessions." = "Simpan beberapa sesi langganan Command Code.";
+
+"codex_reset_credit_expiry_notifications_title" = "Kedaluwarsa kredit reset Codex";
+
+"codex_reset_credit_expiry_notifications_subtitle" = "Periksa saat penggunaan diperbarui dan beri tahu sekali pada 1 hari, 12 jam, 1 jam, 30 menit, dan 10 menit sebelum kedaluwarsa.";

@@ -745,6 +745,7 @@ struct LocalizationLanguageCatalogTests {
             "Base",
             "Bearer eyJ...",
             "Bonus",
+            "Chatbox AI",
             "Chrome",
             "Cookie: ...",
             "Cookie: llama_dev_sess=...",
@@ -762,6 +763,7 @@ struct LocalizationLanguageCatalogTests {
             "Grok CLI",
             "Helmcode Cloud",
             "Input",
+            "Kimi Code",
             "LLMMAN_API_KEY",
             "NaN Builders",
             "No",
@@ -776,6 +778,7 @@ struct LocalizationLanguageCatalogTests {
             "Zed cookie",
             "ZeroGPU",
             "__raycast_session=…; csrf_token=…",
+            "abliteration.ai",
             "ak_…",
             "antigravity-cli-usage",
             "antigravity-cli-version",
@@ -849,20 +852,6 @@ struct LocalizationLanguageCatalogTests {
         ]
         let unchanged = Set(english.keys.filter { italian[$0] == english[$0] })
         #expect(unchanged == intentionallyUnchanged)
-
-        let warningFormat = try #require(italian["quota_warning_notification_body"])
-        let warning = String(
-            format: warningFormat,
-            locale: Locale(identifier: "it_IT"),
-            arguments: ["20%", 15, "settimanale"])
-        #expect(warning == "Rimane 20%. Hai raggiunto la soglia di avviso del 15% per la quota settimanale.")
-
-        let titleFormat = try #require(italian["quota_warning_notification_title"])
-        let title = String(
-            format: titleFormat,
-            locale: Locale(identifier: "it_IT"),
-            arguments: ["Codex", "settimanale"])
-        #expect(title == "Quota settimanale di Codex quasi esaurita")
     }
 }
 

@@ -740,6 +740,8 @@
 "acknowledgements_authors" = "نویسندگان";
 "acknowledgements_license" = "مجوز";
 "check_updates_auto" = "به طور خودکار به روزرسانی ها را بررسی کنید";
+"install_updates_auto" = "دانلود و نصب خودکار به‌روزرسانی‌ها";
+"install_updates_auto_subtitle" = "در صورت خاموش بودن، پیش از نصب نسخه جدید از شما پرسیده می‌شود.";
 "update_channel" = "به روزرسانی کانال";
 "check_for_updates" = "به روزرسانی ها را بررسی کنید...";
 "updates_unavailable" = "به روزرسانی ها در این نسخه در دسترس نیستند.";
@@ -2365,6 +2367,7 @@
 "Core Monthly" = "ماهنامه هسته";
 "Bobcoin usage" = "استفاده از باب کوین";
 "Code 7-day" = "کد 7 روزه سهمیه";
+"Other features" = "سایر قابلیت‌ها";
 "Quota services" = "خدمات سهمیه";
 "Billing history" = "سابقه صورتحساب";
 "Renews" = "تجدید می کند";
@@ -2574,7 +2577,6 @@
 "Also restores the provider order in the menu bar. Can be undone." = "ترتیب ارائه‌دهندگان در نوار منو را نیز بازیابی می‌کند. قابل واگرد است.";
 "Local Codex details; excluded from combined totals." = "جزئیات محلی Codex؛ از مجموع‌های ترکیبی مستثنا شده‌اند.";
 
-"Auto uses an API key when configured, otherwise browser cookies." = "Auto uses an API key when configured, otherwise browser cookies.";
 "Stored in the CodexBar config file. You can also set COMMAND_CODE_API_KEY." = "Stored in the CodexBar config file. You can also set COMMAND_CODE_API_KEY.";
 /* OpenAI organization rate limits and live usage */
 "%@ tokens · %@ requests" = "%@ توکن · %@ درخواست";
@@ -2732,6 +2734,37 @@
 "Tool activity has no separate recorded token or monetary cost." = "هزینهٔ توکن یا هزینهٔ مالی جداگانه‌ای برای فراخوانی ابزار ثبت نشده است.";
 "Request %d" = "درخواست %d";
 
-"Request details exceed the limit." = "Request details exceed the limit.";
+"Request details exceed the limit." = "جزئیات درخواست‌ها از حد مجاز بیشتر است.";
 
-"Request details are unavailable. Refresh usage and try again." = "Request details are unavailable. Refresh usage and try again.";
+"Request details are unavailable. Refresh usage and try again." = "جزئیات درخواست‌ها در دسترس نیست. اطلاعات مصرف را تازه‌سازی کنید و دوباره تلاش کنید.";
+"Primary" = "اصلی";
+"Secondary" = "ثانویه";
+"Tertiary" = "سوم";
+
+/* Chatbox AI */
+"Chatbox AI" = "Chatbox AI";
+"Show Chatbox AI usage" = "نمایش مصرف Chatbox AI";
+"Chatbox AI license key is invalid. Update it in Settings." = "کلید مجوز Chatbox AI نامعتبر است. آن را در تنظیمات به‌روز کنید.";
+"Chatbox AI denied access. Check your license." = "Chatbox AI دسترسی را رد کرد. مجوز خود را بررسی کنید.";
+"Chatbox AI is rate limiting requests. Try again later." = "Chatbox AI تعداد درخواست‌ها را محدود کرده است. بعداً دوباره امتحان کنید.";
+"Chatbox AI request failed. Try refreshing later." = "درخواست Chatbox AI ناموفق بود. بعداً دوباره تازه‌سازی کنید.";
+"Chatbox AI returned an unrecognized response. Update CodexBar and try again." = "Chatbox AI پاسخی ناشناخته برگرداند. CodexBar را به‌روز کنید و دوباره امتحان کنید.";
+
+/* abliteration.ai */
+"abliteration.ai" = "abliteration.ai";
+"Show abliteration.ai usage" = "نمایش مصرف abliteration.ai";
+"abliteration.ai is rate limiting requests. Try again later." = "abliteration.ai تعداد درخواست‌ها را محدود کرده است. بعداً دوباره امتحان کنید.";
+"abliteration.ai request failed. Try refreshing later." = "درخواست abliteration.ai ناموفق بود. بعداً دوباره تازه‌سازی کنید.";
+"abliteration.ai returned an unrecognized response. Update CodexBar and try again." = "abliteration.ai پاسخی ناشناخته برگرداند. CodexBar را به‌روز کنید و دوباره امتحان کنید.";
+"Check your API key in Settings." = "کلید API خود را در تنظیمات بررسی کنید.";
+"Kimi Code" = "Kimi Code";
+
+"OpenCode local history" = "تاریخچهٔ محلی OpenCode";
+
+"Show this Mac's recorded OpenCode usage in Codex history. Off by default; scoped or alternate CODEX_HOME locations always stay excluded." = "مصرف ثبت‌شدهٔ OpenCode در این Mac را در تاریخچهٔ Codex نمایش می‌دهد. به‌طور پیش‌فرض خاموش است؛ مسیرهای CODEX_HOME با دامنهٔ محدود یا جایگزین همیشه مستثنا هستند.";
+"Auto uses the active saved session, otherwise an API key or browser cookies." = "حالت خودکار از نشست ذخیره‌شدهٔ فعال استفاده می‌کند؛ در غیر این صورت از کلید API یا کوکی‌های مرورگر استفاده می‌کند.";
+"Store multiple Command Code subscription sessions." = "چندین نشست اشتراک Command Code را ذخیره کنید.";
+
+"codex_reset_credit_expiry_notifications_title" = "انقضای اعتبار بازنشانی Codex";
+
+"codex_reset_credit_expiry_notifications_subtitle" = "هنگام به‌روزرسانی مصرف بررسی شود و یک روز، ۱۲ ساعت، یک ساعت، ۳۰ دقیقه و ۱۰ دقیقه پیش از انقضا یک بار اعلان داده شود.";

@@ -31,6 +31,8 @@ interface CodexBarSetting {
 }
 
 interface CodexBarRateWindow {
+  /** Optional label for generic cards and CLI text; trimmed, at most 256 UTF-8 bytes. */
+  title?: string | null;
   usedPercent: number;
   windowMinutes?: number | null;
   resetsAt?: Date | string | null;
@@ -95,6 +97,8 @@ interface CodexBarDetailRow {
   severity?: "normal" | "warning" | "critical" | null;
   /** Finite consumed fraction, from 0 through 1 inclusive. */
   progress?: number | null;
+  /** Finite expected consumed fraction from 0 through 1 inclusive; marks pace on the progress bar independently of severity. Ignored without progress. */
+  pace?: number | null;
   /** Finite raw usage, independent of the display string and progress. */
   usageValue?: number | null;
 }

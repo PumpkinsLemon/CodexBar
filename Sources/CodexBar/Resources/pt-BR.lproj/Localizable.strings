@@ -731,6 +731,8 @@
 "acknowledgements_authors" = "Autores";
 "acknowledgements_license" = "Licença";
 "check_updates_auto" = "Buscar atualizações automaticamente";
+"install_updates_auto" = "Baixar e instalar atualizações automaticamente";
+"install_updates_auto_subtitle" = "Quando desativado, você será consultado antes de instalar uma nova versão.";
 "update_channel" = "Canal de atualização";
 "check_for_updates" = "Buscar atualizações…";
 "updates_unavailable" = "Atualizações indisponíveis nesta build.";
@@ -2361,6 +2363,7 @@
 "Core Monthly" = "Núcleo Mensal";
 "Bobcoin usage" = "Uso de Bobcoin";
 "Code 7-day" = "Código Cota de 7 dias";
+"Other features" = "Outros recursos";
 "Quota services" = "Serviços Cota";
 "Billing history" = "Histórico de cobrança";
 "Renews" = "Renova";
@@ -2570,7 +2573,6 @@
 "Also restores the provider order in the menu bar. Can be undone." = "Também restaura a ordem dos provedores na barra de menus. Pode ser desfeito.";
 "Local Codex details; excluded from combined totals." = "Detalhes locais do Codex; excluídos dos totais combinados.";
 
-"Auto uses an API key when configured, otherwise browser cookies." = "Auto uses an API key when configured, otherwise browser cookies.";
 "Stored in the CodexBar config file. You can also set COMMAND_CODE_API_KEY." = "Stored in the CodexBar config file. You can also set COMMAND_CODE_API_KEY.";
 /* OpenAI organization rate limits and live usage */
 "%@ tokens · %@ requests" = "%@ tokens · %@ requisições";
@@ -2728,6 +2730,37 @@
 "Tool activity has no separate recorded token or monetary cost." = "Não há custo separado em tokens ou dinheiro registrado para chamadas de ferramentas.";
 "Request %d" = "Solicitação %d";
 
-"Request details exceed the limit." = "Request details exceed the limit.";
+"Request details exceed the limit." = "Os detalhes das solicitações excedem o limite.";
 
-"Request details are unavailable. Refresh usage and try again." = "Request details are unavailable. Refresh usage and try again.";
+"Request details are unavailable. Refresh usage and try again." = "Os detalhes das solicitações não estão disponíveis. Atualize o uso e tente novamente.";
+"Primary" = "Principal";
+"Secondary" = "Secundária";
+"Tertiary" = "Terciária";
+
+/* Chatbox AI */
+"Chatbox AI" = "Chatbox AI";
+"Show Chatbox AI usage" = "Mostrar uso do Chatbox AI";
+"Chatbox AI license key is invalid. Update it in Settings." = "A chave de licença do Chatbox AI é inválida. Atualize-a nos Ajustes.";
+"Chatbox AI denied access. Check your license." = "O Chatbox AI negou o acesso. Verifique sua licença.";
+"Chatbox AI is rate limiting requests. Try again later." = "O Chatbox AI está limitando a frequência das solicitações. Tente novamente mais tarde.";
+"Chatbox AI request failed. Try refreshing later." = "A solicitação ao Chatbox AI falhou. Tente atualizar mais tarde.";
+"Chatbox AI returned an unrecognized response. Update CodexBar and try again." = "O Chatbox AI retornou uma resposta desconhecida. Atualize o CodexBar e tente novamente.";
+
+/* abliteration.ai */
+"abliteration.ai" = "abliteration.ai";
+"Show abliteration.ai usage" = "Mostrar uso do abliteration.ai";
+"abliteration.ai is rate limiting requests. Try again later." = "O abliteration.ai está limitando a frequência das solicitações. Tente novamente mais tarde.";
+"abliteration.ai request failed. Try refreshing later." = "A solicitação ao abliteration.ai falhou. Tente atualizar mais tarde.";
+"abliteration.ai returned an unrecognized response. Update CodexBar and try again." = "O abliteration.ai retornou uma resposta desconhecida. Atualize o CodexBar e tente novamente.";
+"Check your API key in Settings." = "Verifique sua chave de API nos Ajustes.";
+"Kimi Code" = "Kimi Code";
+
+"OpenCode local history" = "Histórico local do OpenCode";
+
+"Show this Mac's recorded OpenCode usage in Codex history. Off by default; scoped or alternate CODEX_HOME locations always stay excluded." = "Mostra no histórico do Codex o uso do OpenCode registrado neste Mac. Desativado por padrão; locais CODEX_HOME com escopo restrito ou alternativos são sempre excluídos.";
+"Auto uses the active saved session, otherwise an API key or browser cookies." = "Automático usa a sessão salva ativa; caso contrário, uma chave API ou cookies do navegador.";
+"Store multiple Command Code subscription sessions." = "Armazena várias sessões de assinatura do Command Code.";
+
+"codex_reset_credit_expiry_notifications_title" = "Expiração dos créditos de redefinição do Codex";
+
+"codex_reset_credit_expiry_notifications_subtitle" = "Verificar ao atualizar o uso e avisar uma vez a 1 dia, 12 horas, 1 hora, 30 minutos e 10 minutos da expiração.";

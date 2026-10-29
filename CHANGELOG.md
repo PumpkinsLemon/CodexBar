@@ -1,5 +1,79 @@
 # Changelog
 
+## 0.82.1 — Unreleased
+
+## 0.82.0 — 2026-10-26
+
+### Highlights
+
+- Cursor works again with Cursor 3.27, which now encrypts its stored app token: CodexBar decrypts it through Cursor's Safe Storage Keychain item, prompting at most once on a manual refresh and never in the background.
+- Updates: automatic checks and automatic installs are now separate choices, and saved choices survive relaunches and Settings visits.
+- Usage and cost: OpenCode's local history can optionally feed Codex cost history, Codex usage reported over a fixed 30-day window gets pace, Kimi's monthly Total breaks down into Kimi Code and other features, and OpenCode Go can use the active CLI login.
+- Plugins and accounts: plugins can choose which quota window drives the menu-bar percentage and show native pace markers, Command Code keeps several saved subscription sessions, and the CLI gains `config set-cookie` and `config clear-credential`.
+
+### Added
+
+- Updates: separate automatic checks from automatic installs, preserve saved choices across relaunches and Settings visits, and retain the existing default-on behavior (#4777, #4778). Thanks @harveyrandall!
+- Codex: optionally include this device's recorded OpenCode usage in local cost history, preserving recorded $0 costs and keeping scoped accounts and Usage & Spend excluded (#4757, #4752). Thanks @Danielweng0902!
+- Plugins: choose which reported quota window drives the menu-bar percentage and switcher gauge, with automatic fallback when that window is unavailable (#4781). Thanks @coygeek!
+- Plugins: allow detail progress bars to display native pace markers, respecting Show pace (#4776). Thanks @KLIEBHAN!
+- Kimi: break the monthly Total usage pool down into Kimi Code and other features in menu and CLI details (#4759). Thanks @Redwinam!
+- Command Code: manage multiple saved subscription sessions in Settings and select them from the CLI (#4774). Thanks @JavaGT!
+- CLI: add `config set-cookie` and `config clear-credential` for stored manual cookies and API keys, preserving saved accounts and unrelated provider settings (#4765). Thanks @johan456789!
+
+### Changed
+
+- OpenCode Go: use the active CLI login for server quotas when no configured key or usable browser session is available, preserving account selection and local cost history (#4771). Thanks @sreejithraman!
+- Settings: fade the provider reorder Undo banner after inactivity, pausing while hovered or focused and respecting Reduce Motion (#4760). Thanks @elijahfriedman!
+
+### Fixed
+
+- Cursor: read encrypted Cursor.app tokens without background Keychain prompts, preserving account validation and browser fallback (#4755). Thanks @micheltriana!
+- Alibaba/Qwen: skip Safe Storage Keychain lookups when the browser-cookie fallback finds no matching encrypted cookies (#4790).
+- Codex: calculate pace for explicitly reported fixed 30-day usage windows using their actual duration (#4766). Thanks @johan456789!
+- Settings: hide the Version row for web-only Cursor and Raycast providers instead of showing "not detected" for a detection they do not support (#4769, #4779). Thanks @LeoLin990405!
+- Trae CN: distinguish the Usage meter from the Credits details in Visible usage items while preserving hidden choices (#4764, #4780). Thanks @LeoLin990405 and @liuyuplus!
+- WorkBuddy: keep resets on the paid subscription cycle instead of an earlier trial or reward expiry (#4767). Thanks @codertesla!
+- WorkBuddy: use the official mascot instead of the placeholder letter icon (#4768). Thanks @codertesla!
+
+## 0.81.0 — 2026-10-24
+
+### Highlights
+
+- New providers and Usage & Spend: abliteration.ai and Chatbox AI join the bundled providers (110 in total), and Usage & Spend can search and sort sessions and open one to inspect its requests.
+- Reliability: a guarded file-descriptor crash during CLI discovery is fixed, passive Antigravity (and CodeRabbit) probes no longer trigger multi-gigabyte background CLI updates, Claude OAuth recovers when the Keychain only holds MCP state, DeepSeek works under Auto on Linux, and stale Homebrew installs are repaired on update.
+- Menu bar and plugins: Auto tokens name the window they picked (`5h 84%`, `W +7%`), stacked text uses a heavier weight, and user plugins gain window titles, reset text, usage hooks, and visible refresh errors with the age of the last good data.
+- Updates: Sparkle release notes render as formatted Markdown with linked issues and contributors.
+
+### Added
+
+- abliteration.ai: show prepaid USD balance and credits usage through its read-only API, with API-key setup and no inferred resets (#4756).
+- Usage & Spend: search and sort session summaries, then inspect bounded request accounting for the selected native Codex session without retaining request details during ordinary refreshes (#4730). Thanks @PumpkinsLemon!
+- Chatbox AI: track plan points, rewards, top-up credits, and image quotas with a pasted license key through the bundled plugin (#4736). Thanks @Andy115951!
+- Menu bar: identify the selected quota in Auto percentage, pace, and reset tokens when multiple windows are available, using the existing Show window labels option (#4743). Thanks @arnodirlam!
+- Plugins: support custom usage-window titles, shared reset text, and existing external usage/quota hooks for installed providers (#4722, #4723, #4724). Thanks @coygeek!
+
+### Changed
+
+- Menu bar: improve stacked text legibility with medium weight while preserving regular weight for single-line layouts (#4713). Thanks @arnodirlam!
+- Updates: render release notes with Sparkle's native Markdown support and link GitHub references (#4751). Thanks @SaahiilM!
+- Docs: explain Kiro's separate usage/context chat probes and the known empty-session persistence issue (#4746). Thanks @hcoronel1!
+
+### Fixed
+
+- Reliability: close subprocess output captures only once, preventing reused-file-descriptor crashes during Antigravity CLI discovery and other probes (#4748). Thanks @nyan-mikan!
+- Antigravity: prevent passive agy version and usage probes from triggering CLI auto-update downloads (#4739). Thanks @thezelium!
+- CodeRabbit: disable CLI auto-updates during passive usage probes (#4739).
+- Claude: let a manual OAuth refresh recover through Claude Code's CLI when the readable Keychain item contains only MCP OAuth state (#4731). Thanks @ifangxiang!
+- DeepSeek: allow Auto on Linux to use a configured API key instead of rejecting it for requiring web support (#4747). Thanks @johan456789!
+- Updates: repair stale Homebrew app bundles when the cask receipt is already current, while keeping installation behind the Update action (#4745). Thanks @dnicolson!
+- Trae CN: import automatic sessions from the parent domain while preserving API-origin manual cookies (#4732). Thanks @liuyuplus!
+- Linux desktop: fix launcher, Settings/Spending actions, and login startup when home paths contain quotes, dollar signs, backticks, backslashes, or percent signs (#4715). Thanks @Lucenx9!
+- Plugins: show refresh failures alongside last-good usage and clear the error after recovery (#4726). Thanks @coygeek!
+- Plugins: show how old retained usage is after a refresh fails, updating the card layout for capture age and app language (#4726, #4733). Thanks @LeoLin990405!
+- Plugins: identify missing endpoint settings as required configuration while preserving URL validation and approval (#4721, #4727). Thanks @harjothkhara and @coygeek!
+- Settings: let the native detail pane and frosted toolbar backing fill wide windows on macOS 26 and later (#4741). Thanks @elijahfriedman!
+
 ## 0.80.0 — 2026-10-23
 
 ### Highlights

@@ -733,6 +733,8 @@
 "acknowledgements_authors" = "Upphovspersoner";
 "acknowledgements_license" = "Licens";
 "check_updates_auto" = "Sök efter uppdateringar automatiskt";
+"install_updates_auto" = "Hämta och installera uppdateringar automatiskt";
+"install_updates_auto_subtitle" = "När det är av tillfrågas du innan en ny version installeras.";
 "update_channel" = "Uppdateringskanal";
 "check_for_updates" = "Sök efter uppdateringar…";
 "updates_unavailable" = "Uppdateringar är inte tillgängliga i det här bygget.";
@@ -2360,6 +2362,7 @@
 "Core Monthly" = "Core Monthly";
 "Bobcoin usage" = "Bobcoin användning";
 "Code 7-day" = "Kod 7-dagars Kvot";
+"Other features" = "Övriga funktioner";
 "Quota services" = "Kvot tjänster";
 "Billing history" = "Faktureringshistorik";
 "Renews" = "Förnyar";
@@ -2569,7 +2572,6 @@
 "Also restores the provider order in the menu bar. Can be undone." = "Återställer även leverantörsordningen i menyraden. Kan ångras.";
 "Local Codex details; excluded from combined totals." = "Lokala Codex-detaljer; ingår inte i de sammanlagda totalerna.";
 
-"Auto uses an API key when configured, otherwise browser cookies." = "Auto uses an API key when configured, otherwise browser cookies.";
 "Stored in the CodexBar config file. You can also set COMMAND_CODE_API_KEY." = "Stored in the CodexBar config file. You can also set COMMAND_CODE_API_KEY.";
 /* OpenAI organization rate limits and live usage */
 "%@ tokens · %@ requests" = "%@ token · %@ förfrågningar";
@@ -2727,6 +2729,37 @@
 "Tool activity has no separate recorded token or monetary cost." = "Inga separata token- eller penningkostnader registreras för verktygsanrop.";
 "Request %d" = "Förfrågan %d";
 
-"Request details exceed the limit." = "Request details exceed the limit.";
+"Request details exceed the limit." = "Förfrågningsdetaljerna överskrider gränsen.";
 
-"Request details are unavailable. Refresh usage and try again." = "Request details are unavailable. Refresh usage and try again.";
+"Request details are unavailable. Refresh usage and try again." = "Förfrågningsdetaljerna är inte tillgängliga. Uppdatera användningen och försök igen.";
+"Primary" = "Primärt";
+"Secondary" = "Sekundärt";
+"Tertiary" = "Tertiärt";
+
+/* Chatbox AI */
+"Chatbox AI" = "Chatbox AI";
+"Show Chatbox AI usage" = "Visa Chatbox AI-användning";
+"Chatbox AI license key is invalid. Update it in Settings." = "Licensnyckeln för Chatbox AI är ogiltig. Uppdatera den i Inställningar.";
+"Chatbox AI denied access. Check your license." = "Chatbox AI nekade åtkomst. Kontrollera din licens.";
+"Chatbox AI is rate limiting requests. Try again later." = "Chatbox AI begränsar antalet förfrågningar. Försök igen senare.";
+"Chatbox AI request failed. Try refreshing later." = "Chatbox AI-förfrågan misslyckades. Försök uppdatera senare.";
+"Chatbox AI returned an unrecognized response. Update CodexBar and try again." = "Chatbox AI returnerade ett okänt svar. Uppdatera CodexBar och försök igen.";
+
+/* abliteration.ai */
+"abliteration.ai" = "abliteration.ai";
+"Show abliteration.ai usage" = "Visa abliteration.ai-användning";
+"abliteration.ai is rate limiting requests. Try again later." = "abliteration.ai begränsar antalet förfrågningar. Försök igen senare.";
+"abliteration.ai request failed. Try refreshing later." = "abliteration.ai-förfrågan misslyckades. Försök uppdatera senare.";
+"abliteration.ai returned an unrecognized response. Update CodexBar and try again." = "abliteration.ai returnerade ett okänt svar. Uppdatera CodexBar och försök igen.";
+"Check your API key in Settings." = "Kontrollera din API-nyckel i Inställningar.";
+"Kimi Code" = "Kimi Code";
+
+"OpenCode local history" = "Lokal OpenCode-historik";
+
+"Show this Mac's recorded OpenCode usage in Codex history. Off by default; scoped or alternate CODEX_HOME locations always stay excluded." = "Visar OpenCode-användningen som registrerats på den här Mac-datorn i Codex-historiken. Avstängt som standard; CODEX_HOME-platser med begränsad omfattning eller alternativa platser förblir alltid undantagna.";
+"Auto uses the active saved session, otherwise an API key or browser cookies." = "Automatiskt använder den aktiva sparade sessionen, annars en API-nyckel eller webbläsarcookies.";
+"Store multiple Command Code subscription sessions." = "Spara flera prenumerationssessioner för Command Code.";
+
+"codex_reset_credit_expiry_notifications_title" = "Codex-återställningskrediter löper ut";
+
+"codex_reset_credit_expiry_notifications_subtitle" = "Kontrollera vid användningsuppdatering och meddela en gång 1 dag, 12 timmar, 1 timme, 30 minuter och 10 minuter före utgång.";

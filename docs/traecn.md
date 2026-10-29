@@ -10,7 +10,8 @@ plugin_scope: Trae CN session token exchange and entitlement summary through the
 
 Trae CN is ByteDance's China-region service at [trae.cn](https://www.trae.cn). Enable **Trae CN** in
 Settings → Providers after signing in to its dashboard. Automatic cookies use the shared browser order
-and prompt policy. Manual mode accepts the Cookie header from an `api.trae.cn` dashboard request;
+and prompt policy, importing sessions from the shared parent domain `trae.cn`. Requests remain on `api.trae.cn`.
+Manual mode accepts the Cookie header from an API dashboard request and preserves its origin;
 Off disables cookie access. No API key, endpoint override, or separate token store is needed.
 
 The bundled plugin makes two non-billable requests to `https://api.trae.cn`:
@@ -26,6 +27,9 @@ Traversal stops at the first valid response. Refreshes do not send model prompts
 The primary gauge uses `usage_summary.consumed_amount / total_amount` across all credit packs.
 Used, total, and remaining counts stay visible when the allowance is zero. Missing or invalid numbers
 and non-credit billing fail closed instead of becoming zero usage.
+
+The meter is labeled **Usage**, and its Used / Total / Remaining block is labeled **Credits**.
+These names distinguish the two **Visible usage items** controls without changing existing hidden choices.
 
 Credit packs can expire independently. Pack expiry and billing-attempt timestamps do not establish a
 single allowance reset or subscription renewal, so no countdown or monthly pacing window is inferred.
