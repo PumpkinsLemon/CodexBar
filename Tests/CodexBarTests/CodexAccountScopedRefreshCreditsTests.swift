@@ -28,7 +28,7 @@ extension CodexAccountScopedRefreshTests {
             .withCodexResetCredits(inventory)
         self.installImmediateCodexProvider(on: store, snapshot: snapshot)
         let defaults = settings.userDefaults
-        let key = CodexResetCreditExpiryNotifier.reminderFingerprintsKey
+        let key = CodexResetCreditExpiryNotifier.summaryFingerprintsKey
 
         settings.codexResetCreditExpiryNotificationsEnabled = false
         await store.refreshProvider(.codex, allowDisabled: true)
@@ -38,7 +38,7 @@ extension CodexAccountScopedRefreshTests {
         settings.codexResetCreditExpiryNotificationsEnabled = true
         await store.refreshProvider(.codex, allowDisabled: true)
         let receipts = try #require(defaults.stringArray(forKey: key))
-        #expect(receipts.count == 1)
+        #expect(receipts.count == 2)
         await store.refreshProvider(.codex, allowDisabled: true)
         #expect(defaults.stringArray(forKey: key) == receipts)
 

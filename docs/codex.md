@@ -51,17 +51,15 @@ Usage source picker:
 - The app reads reset-credit inventory once per refresh with a best-effort
   `GET https://chatgpt.com/backend-api/wham/rate-limit-reset-credits` using the same account-scoped OAuth context;
   the CLI requests it only when optional credits are included.
-- The menu and provider settings list every still-available expiry. Settings → Notifications → **Codex reset credit
-  expiry** independently enables reminders, off by default for fresh installs. On upgrade, existing installations
-  with optional-credit visibility enabled (including its legacy default) keep expiry alerts enabled; those with
-  visibility disabled stay off. The one-time choice is saved, so a later launch or upgrade never overrides an
-  explicit on/off choice. Existing inventory and legacy summary receipts remain intact; countdowns use separate
-  per-threshold receipts. On usage refresh, each available credit is announced
-  once at 1 day, 12 hours, 1 hour, 30 minutes, and 10 minutes before expiry. Refreshes and app restarts share
-  bounded, hashed receipts; adding another credit does not repeat an existing credit's reminder. A late refresh
-  announces only the closest threshold, without replaying older reminders. Reminders require CodexBar to be
-  running and usage to refresh; manual refresh mode checks only when refreshed. Used, redeeming, expired, and
-  no-expiry credits are excluded. CodexBar does not redeem or modify reset credits.
+- The menu and provider settings list every still-available expiry. The optional credits setting continues to
+  control the existing one-time summary within three days of expiry. Settings → Notifications → **Codex reset
+  credit expiry** adds reminders at 1 day and 1 hour before expiry. This separate toggle is off by default on
+  both new and existing installations; upgrading does not alter the summary behavior or its saved receipts.
+  Reminders run only when usage refreshes, with bounded hashed receipts in the existing local receipt store.
+  A late first refresh sends one notice and consumes earlier reminder stages; it does not replay missed alerts.
+  Repeated refreshes, restarts, and account changes do not repeat a recorded reminder. Credit display visibility
+  does not gate the opt-in countdowns. Used, redeeming, expired, unknown-status, and no-expiry credits stay silent.
+  CodexBar does not redeem or modify reset credits.
 - `rate_limit.primary_window` / `secondary_window` map to the session/weekly lanes.
 - When a response explicitly reports a fixed 30-day window (`limit_window_seconds: 2592000`),
   pace uses those 43,200 minutes rather than inferring a calendar month from the reset date.
@@ -383,6 +381,11 @@ Usage & Spend includes this Mac's Codex session home even when the CLI keeps cre
 there is no `auth.json`. Local cost estimates do not require account identity or a successful quota refresh.
 Managed and profile homes retain their separate history scopes; a home already represented by a visible account
 is not added again as a local source. This does not read the CLI's keyring credentials.
+
+Each Codex home keeps its scan progress, discovery, coverage, and daily totals in the existing shared SQLite store.
+Switching homes does not reset another home's completed history or pending work, and retention only prunes the
+selected home's rows. Existing singleton state is migrated in place to its recorded home (or the default home when
+no root was recorded), retaining file IDs and history without creating per-home database copies.
 
 The static musl Linux CLI reserves an 8 MiB thread stack so scanning non-empty Codex session logs
 does not exhaust musl's smaller default stack. The scanner and cache format stay shared with glibc and macOS.

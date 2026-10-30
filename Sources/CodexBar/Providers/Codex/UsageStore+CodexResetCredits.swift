@@ -27,11 +27,15 @@ extension UsageStore {
                 title: title,
                 body: body,
                 isCurrent: { [weak self] in
-                    self?.settings.codexResetCreditExpiryNotificationsEnabled == true && self?.isEnabled(.codex) == true
+                    guard let self, self.isEnabled(.codex) else { return false }
+                    return prefix == CodexResetCreditExpiryNotifier.countdownNotificationPrefix
+                        ? self.settings.codexResetCreditExpiryNotificationsEnabled
+                        : self.settings.showOptionalCreditsAndExtraUsage
                 })
         }.postExpiringCreditsIfNeeded(
             snapshot: resetCredits,
-            enabled: self.settings.codexResetCreditExpiryNotificationsEnabled,
+            summaryEnabled: self.settings.showOptionalCreditsAndExtraUsage,
+            countdownEnabled: self.settings.codexResetCreditExpiryNotificationsEnabled,
             resetStyle: self.settings.resetTimeDisplayStyle)
     }
 

@@ -160,6 +160,7 @@
 "Individual credits" = "Bireysel krediler";
 "Workspace" = "Çalışma alanı";
 "Credits history" = "Kredi geçmişi";
+"Cursor app session expired — open Cursor to sign in again, or sign in to cursor.com in your browser." = "Cursor uygulama oturumunun süresi doldu — yeniden giriş yapmak için Cursor’ı açın veya tarayıcınızda cursor.com’a giriş yapın.";
 "Cursor login failed" = "Cursor girişi başarısız";
 "Custom" = "Özel";
 "Custom Path" = "Özel yol";
@@ -2766,4 +2767,4 @@
 
 "codex_reset_credit_expiry_notifications_title" = "Codex sıfırlama kredisi süresi";
 
-"codex_reset_credit_expiry_notifications_subtitle" = "Kullanım yenilendiğinde kontrol et ve sona ermeden 1 gün, 12 saat, 1 saat, 30 dakika ve 10 dakika önce birer kez bildir.";
+"codex_reset_credit_expiry_notifications_subtitle" = "Kullanım yenilendiğinde, süre dolmadan 1 gün ve 1 saat önce hatırlatır.";

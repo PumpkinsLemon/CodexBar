@@ -177,6 +177,7 @@
 "Individual credits" = "Tín dụng cá nhân";
 "Workspace" = "Không gian làm việc";
 "Credits history" = "Lịch sử tín dụng";
+"Cursor app session expired — open Cursor to sign in again, or sign in to cursor.com in your browser." = "Phiên ứng dụng Cursor đã hết hạn — mở Cursor để đăng nhập lại hoặc đăng nhập vào cursor.com trong trình duyệt.";
 "Cursor login failed" = "Đăng nhập con trỏ không thành công";
 "Custom" = "Tùy chỉnh";
 "Custom Path" = "Đường dẫn tùy chỉnh";
@@ -2764,4 +2765,4 @@
 
 "codex_reset_credit_expiry_notifications_title" = "Hạn sử dụng tín dụng đặt lại Codex";
 
-"codex_reset_credit_expiry_notifications_subtitle" = "Kiểm tra khi làm mới mức sử dụng và thông báo một lần vào 1 ngày, 12 giờ, 1 giờ, 30 phút và 10 phút trước khi hết hạn.";
+"codex_reset_credit_expiry_notifications_subtitle" = "Thêm lời nhắc khi làm mới mức sử dụng, 1 ngày và 1 giờ trước khi hết hạn.";

@@ -160,6 +160,7 @@
 "Individual credits" = "اعتبارات فردی";
 "Workspace" = "فضای کاری";
 "Credits history" = "تاریخچه اعتبارها";
+"Cursor app session expired — open Cursor to sign in again, or sign in to cursor.com in your browser." = "نشست برنامهٔ Cursor منقضی شده است — Cursor را باز کنید و دوباره وارد شوید، یا در مرورگر خود وارد cursor.com شوید.";
 "Cursor login failed" = "ورود Cursor ناموفق";
 "Custom" = "عرف";
 "Custom Path" = "مسیر سفارشی";
@@ -2767,4 +2768,4 @@
 
 "codex_reset_credit_expiry_notifications_title" = "انقضای اعتبار بازنشانی Codex";
 
-"codex_reset_credit_expiry_notifications_subtitle" = "هنگام به‌روزرسانی مصرف بررسی شود و یک روز، ۱۲ ساعت، یک ساعت، ۳۰ دقیقه و ۱۰ دقیقه پیش از انقضا یک بار اعلان داده شود.";
+"codex_reset_credit_expiry_notifications_subtitle" = "هنگام به‌روزرسانی مصرف، ۱ روز و ۱ ساعت پیش از انقضا یادآوری می‌کند.";

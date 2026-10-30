@@ -160,6 +160,7 @@
 "Individual credits" = "Kredyty indywidualne";
 "Workspace" = "Obszar roboczy";
 "Credits history" = "Historia kredytów";
+"Cursor app session expired — open Cursor to sign in again, or sign in to cursor.com in your browser." = "Sesja aplikacji Cursor wygasła — otwórz Cursor, aby zalogować się ponownie, lub zaloguj się na cursor.com w przeglądarce.";
 "Cursor login failed" = "Logowanie do Cursor nie powiodło się";
 "Custom" = "Niestandardowe";
 "Custom Path" = "Ścieżka niestandardowa";
@@ -2766,4 +2767,4 @@
 
 "codex_reset_credit_expiry_notifications_title" = "Wygaśnięcie kredytów resetowania Codex";
 
-"codex_reset_credit_expiry_notifications_subtitle" = "Sprawdzaj przy odświeżaniu użycia i powiadamiaj raz na 1 dzień, 12 godzin, 1 godzinę, 30 minut i 10 minut przed wygaśnięciem.";
+"codex_reset_credit_expiry_notifications_subtitle" = "Dodaje przypomnienia przy odświeżaniu użycia, 1 dzień i 1 godzinę przed wygaśnięciem.";

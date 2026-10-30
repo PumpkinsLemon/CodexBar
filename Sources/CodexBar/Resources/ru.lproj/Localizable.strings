@@ -178,6 +178,7 @@
 "Individual credits" = "Индивидуальные кредиты";
 "Workspace" = "Рабочая область";
 "Credits history" = "История кредитов";
+"Cursor app session expired — open Cursor to sign in again, or sign in to cursor.com in your browser." = "Срок действия сеанса приложения Cursor истёк — откройте Cursor, чтобы войти снова, или войдите на cursor.com в браузере.";
 "Cursor login failed" = "Не удалось войти в Cursor";
 "Custom" = "Пользовательский";
 "Custom Path" = "Пользовательский путь";
@@ -2764,4 +2765,4 @@
 
 "codex_reset_credit_expiry_notifications_title" = "Истечение срока кредитов сброса Codex";
 
-"codex_reset_credit_expiry_notifications_subtitle" = "Проверять при обновлении использования и уведомлять один раз за 1 день, 12 часов, 1 час, 30 минут и 10 минут до истечения.";
+"codex_reset_credit_expiry_notifications_subtitle" = "Напоминает при обновлении использования за 1 день и за 1 час до истечения срока.";

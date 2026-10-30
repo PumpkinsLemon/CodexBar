@@ -160,6 +160,7 @@
 "Individual credits" = "Kredit individual";
 "Workspace" = "Ruang kerja";
 "Credits history" = "Riwayat kredit";
+"Cursor app session expired — open Cursor to sign in again, or sign in to cursor.com in your browser." = "Sesi aplikasi Cursor telah kedaluwarsa — buka Cursor untuk masuk kembali, atau masuk ke cursor.com di browser Anda.";
 "Cursor login failed" = "Login Cursor gagal";
 "Custom" = "Kustom";
 "Custom Path" = "Path Kustom";
@@ -2765,4 +2766,4 @@
 
 "codex_reset_credit_expiry_notifications_title" = "Kedaluwarsa kredit reset Codex";
 
-"codex_reset_credit_expiry_notifications_subtitle" = "Periksa saat penggunaan diperbarui dan beri tahu sekali pada 1 hari, 12 jam, 1 jam, 30 menit, dan 10 menit sebelum kedaluwarsa.";
+"codex_reset_credit_expiry_notifications_subtitle" = "Menambahkan pengingat saat penggunaan diperbarui, 1 hari dan 1 jam sebelum kedaluwarsa.";

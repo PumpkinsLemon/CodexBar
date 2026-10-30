@@ -531,12 +531,6 @@ extension SettingsStore {
             userDefaults.set(debugLogLevelRaw, forKey: "debugLogLevel")
         }
         let notificationDefaults = Self.loadNotificationDefaults(userDefaults: userDefaults)
-        if userDefaults.object(forKey: "codexResetCreditExpiryNotificationsEnabled") == nil {
-            // Preserve expiry alerts for existing recipients; persist fresh-install opt-out before later launches.
-            let legacyAlertsEnabled = hadPreviousInstallationState &&
-                (userDefaults.object(forKey: "showOptionalCreditsAndExtraUsage") as? Bool ?? true)
-            userDefaults.set(legacyAlertsEnabled, forKey: "codexResetCreditExpiryNotificationsEnabled")
-        }
         let quotaWarnings = Self.loadQuotaWarningDefaults(userDefaults: userDefaults)
         let multiAccountMenuLayoutRaw = Self.loadMultiAccountMenuLayoutRaw(userDefaults: userDefaults)
         let resolvedPreferences = Self.loadMenuBarMetricPreferences(userDefaults: userDefaults)
@@ -621,7 +615,7 @@ extension SettingsStore {
             menuBarShowsBrandIconWithPercent: userDefaults.object(
                 forKey: "menuBarShowsBrandIconWithPercent") as? Bool ?? false,
             menuBarHidesCritters: userDefaults.object(forKey: "menuBarHidesCritters") as? Bool ?? false,
-            menuBarColorPace: userDefaults.bool(forKey: "menuBarColorPace"),
+            menuBarColorPace: userDefaults.object(forKey: "menuBarColorPace") as? Bool ?? true,
             menuBarPaceReservePositive: userDefaults.bool(forKey: "menuBarPaceReservePositive"),
             menuBarColorByProvider: userDefaults.bool(forKey: "menuBarColorByProvider"),
             menuBarHighContrastOnInactiveDisplays: userDefaults.object(

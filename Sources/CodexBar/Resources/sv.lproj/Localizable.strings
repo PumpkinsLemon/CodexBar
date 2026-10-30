@@ -177,6 +177,7 @@
 "Individual credits" = "Individuella krediter";
 "Workspace" = "Arbetsyta";
 "Credits history" = "Kredithistorik";
+"Cursor app session expired — open Cursor to sign in again, or sign in to cursor.com in your browser." = "Sessionen i Cursor-appen har gått ut — öppna Cursor för att logga in igen eller logga in på cursor.com i webbläsaren.";
 "Cursor login failed" = "Cursor-inloggning misslyckades";
 "Custom" = "Anpassat";
 "Custom Path" = "Anpassad sökväg";
@@ -2762,4 +2763,4 @@
 
 "codex_reset_credit_expiry_notifications_title" = "Codex-återställningskrediter löper ut";
 
-"codex_reset_credit_expiry_notifications_subtitle" = "Kontrollera vid användningsuppdatering och meddela en gång 1 dag, 12 timmar, 1 timme, 30 minuter och 10 minuter före utgång.";
+"codex_reset_credit_expiry_notifications_subtitle" = "Lägger till påminnelser när användningen uppdateras, 1 dag och 1 timme före utgången.";

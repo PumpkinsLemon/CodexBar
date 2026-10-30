@@ -180,6 +180,7 @@
 "Individual credits" = "个人额度";
 "Workspace" = "工作区";
 "Credits history" = "额度记录";
+"Cursor app session expired — open Cursor to sign in again, or sign in to cursor.com in your browser." = "Cursor 应用会话已过期 — 请打开 Cursor 重新登录，或在浏览器中登录 cursor.com。";
 "Cursor login failed" = "Cursor 登录失败";
 "Custom" = "自定义";
 "Custom Path" = "自定义路径";
@@ -2755,4 +2756,4 @@
 
 "codex_reset_credit_expiry_notifications_title" = "Codex 重置卡到期提醒";
 
-"codex_reset_credit_expiry_notifications_subtitle" = "在用量刷新时检查，到期前 1 天、12 小时、1 小时、30 分钟和 10 分钟各提醒一次。";
+"codex_reset_credit_expiry_notifications_subtitle" = "刷新用量时，在到期前 1 天和 1 小时发送提醒。";

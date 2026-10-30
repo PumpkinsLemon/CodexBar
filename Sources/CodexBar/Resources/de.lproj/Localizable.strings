@@ -175,6 +175,7 @@
 "Top-up credits" = "Aufgeladene Credits";
 "Remaining" = "Übrig";
 "Credits history" = "Credits-Geschichte";
+"Cursor app session expired — open Cursor to sign in again, or sign in to cursor.com in your browser." = "Die Sitzung der Cursor-App ist abgelaufen — öffne Cursor, um dich erneut anzumelden, oder melde dich im Browser bei cursor.com an.";
 "Cursor login failed" = "Die Cursor-Anmeldung ist fehlgeschlagen";
 "Custom" = "Benutzerdefiniert";
 "Custom Path" = "Benutzerdefinierter Pfad";
@@ -2761,4 +2762,4 @@
 
 "codex_reset_credit_expiry_notifications_title" = "Ablauf von Codex-Reset-Guthaben";
 
-"codex_reset_credit_expiry_notifications_subtitle" = "Bei Nutzungsaktualisierung prüfen und jeweils 1 Tag, 12 Stunden, 1 Stunde, 30 Minuten und 10 Minuten vor Ablauf benachrichtigen.";
+"codex_reset_credit_expiry_notifications_subtitle" = "Erinnert bei der Nutzungsaktualisierung 1 Tag und 1 Stunde vor Ablauf.";

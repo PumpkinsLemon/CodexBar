@@ -10,7 +10,7 @@ struct SettingsPersistenceContractTests {
         let defaults = InMemoryUserDefaults()
         let settings = testSettingsStore(suiteName: #function, userDefaults: defaults)
         #expect(!settings.codexResetCreditExpiryNotificationsEnabled)
-        #expect(defaults.object(forKey: "codexResetCreditExpiryNotificationsEnabled") as? Bool == false)
+        #expect(defaults.object(forKey: "codexResetCreditExpiryNotificationsEnabled") == nil)
         defaults.set(true, forKey: "providerDetectionCompleted")
         #expect(!testSettingsStore(suiteName: #function, userDefaults: defaults)
             .codexResetCreditExpiryNotificationsEnabled)
@@ -28,7 +28,7 @@ struct SettingsPersistenceContractTests {
     }
 
     @Test(arguments: [true, false])
-    func `Codex expiry upgrades preserve the legacy alert choice and receipts`(legacyEnabled: Bool) {
+    func `Codex countdown opt in preserves the legacy summary choice and receipts`(legacyEnabled: Bool) {
         let receipts = [String(repeating: "a", count: 64)]
         let defaults = InMemoryUserDefaults(values: [
             "providerDetectionCompleted": true,
@@ -36,8 +36,8 @@ struct SettingsPersistenceContractTests {
             "codexResetCreditExpirySummaryFingerprints": receipts,
         ])
         let settings = testSettingsStore(suiteName: #function, userDefaults: defaults)
-        #expect(settings.codexResetCreditExpiryNotificationsEnabled == legacyEnabled)
-        #expect(defaults.object(forKey: "codexResetCreditExpiryNotificationsEnabled") as? Bool == legacyEnabled)
+        #expect(!settings.codexResetCreditExpiryNotificationsEnabled)
+        #expect(defaults.object(forKey: "codexResetCreditExpiryNotificationsEnabled") == nil)
         #expect(settings.showOptionalCreditsAndExtraUsage == legacyEnabled)
         #expect(defaults.stringArray(forKey: "codexResetCreditExpirySummaryFingerprints") == receipts)
         settings.codexResetCreditExpiryNotificationsEnabled = false
@@ -46,15 +46,15 @@ struct SettingsPersistenceContractTests {
     }
 
     @Test
-    func `existing config with legacy default visibility retains Codex expiry alerts`() {
+    func `existing config retains summary visibility without enabling countdowns`() {
         let defaults = InMemoryUserDefaults()
         let settings = testSettingsStore(
             suiteName: #function,
             userDefaults: defaults,
             config: CodexBarConfig.makeDefault())
         #expect(settings.showOptionalCreditsAndExtraUsage)
-        #expect(settings.codexResetCreditExpiryNotificationsEnabled)
-        #expect(defaults.bool(forKey: "codexResetCreditExpiryNotificationsEnabled"))
+        #expect(!settings.codexResetCreditExpiryNotificationsEnabled)
+        #expect(defaults.object(forKey: "codexResetCreditExpiryNotificationsEnabled") == nil)
     }
 
     @Test

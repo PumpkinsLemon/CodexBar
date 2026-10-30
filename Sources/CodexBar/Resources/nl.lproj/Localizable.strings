@@ -177,6 +177,7 @@
 "Individual credits" = "Individuele kredieten";
 "Workspace" = "Werkruimte";
 "Credits history" = "Creditgeschiedenis";
+"Cursor app session expired — open Cursor to sign in again, or sign in to cursor.com in your browser." = "De sessie van de Cursor-app is verlopen — open Cursor om opnieuw in te loggen of log in op cursor.com in je browser.";
 "Cursor login failed" = "Cursoraanmelding mislukt";
 "Custom" = "Aangepast";
 "Custom Path" = "Aangepast pad";
@@ -2760,4 +2761,4 @@
 
 "codex_reset_credit_expiry_notifications_title" = "Vervallen van Codex-resetcredits";
 
-"codex_reset_credit_expiry_notifications_subtitle" = "Controleer bij vernieuwen van gebruik en meld eenmaal 1 dag, 12 uur, 1 uur, 30 minuten en 10 minuten voor verval.";
+"codex_reset_credit_expiry_notifications_subtitle" = "Voegt bij het vernieuwen van het gebruik herinneringen toe, 1 dag en 1 uur voor het verlopen.";
