@@ -76,7 +76,8 @@ struct CodexResetCreditExpiryNotifierTests {
 
     @Test
     func `posts bounded receipts without persisting or logging raw credit IDs`() throws {
-        let defaults = InMemoryUserDefaults()
+        let legacyReceipts = [String(repeating: "a", count: 64)]
+        let defaults = InMemoryUserDefaults(values: ["codexResetCreditExpirySummaryFingerprints": legacyReceipts])
         let rawID = "private-provider-credit-id"
         var posts: [(prefix: String, title: String, body: String)] = []
         let notifier = CodexResetCreditExpiryNotifier(userDefaults: defaults) { prefix, title, body in
@@ -95,6 +96,7 @@ struct CodexResetCreditExpiryNotifierTests {
             forKey: CodexResetCreditExpiryNotifier.reminderFingerprintsKey))
         #expect(fingerprints.count == 1)
         #expect(fingerprints.allSatisfy { $0.count == 64 && !$0.contains(rawID) })
+        #expect(defaults.stringArray(forKey: "codexResetCreditExpirySummaryFingerprints") == legacyReceipts)
     }
 
     @Test

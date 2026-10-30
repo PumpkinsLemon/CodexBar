@@ -10,6 +10,10 @@ struct SettingsPersistenceContractTests {
         let defaults = InMemoryUserDefaults()
         let settings = testSettingsStore(suiteName: #function, userDefaults: defaults)
         #expect(!settings.codexResetCreditExpiryNotificationsEnabled)
+        #expect(defaults.object(forKey: "codexResetCreditExpiryNotificationsEnabled") as? Bool == false)
+        defaults.set(true, forKey: "providerDetectionCompleted")
+        #expect(!testSettingsStore(suiteName: #function, userDefaults: defaults)
+            .codexResetCreditExpiryNotificationsEnabled)
         settings.codexResetCreditExpiryNotificationsEnabled = true
         let reloaded = testSettingsStore(suiteName: #function, userDefaults: defaults)
         #expect(reloaded.codexResetCreditExpiryNotificationsEnabled)
@@ -21,6 +25,36 @@ struct SettingsPersistenceContractTests {
             .codexResetCreditExpiryNotificationsEnabled)
         try target.importPreferences(settings.exportPreferences())
         #expect(!target.codexResetCreditExpiryNotificationsEnabled)
+    }
+
+    @Test(arguments: [true, false])
+    func `Codex expiry upgrades preserve the legacy alert choice and receipts`(legacyEnabled: Bool) {
+        let receipts = [String(repeating: "a", count: 64)]
+        let defaults = InMemoryUserDefaults(values: [
+            "providerDetectionCompleted": true,
+            "showOptionalCreditsAndExtraUsage": legacyEnabled,
+            "codexResetCreditExpirySummaryFingerprints": receipts,
+        ])
+        let settings = testSettingsStore(suiteName: #function, userDefaults: defaults)
+        #expect(settings.codexResetCreditExpiryNotificationsEnabled == legacyEnabled)
+        #expect(defaults.object(forKey: "codexResetCreditExpiryNotificationsEnabled") as? Bool == legacyEnabled)
+        #expect(settings.showOptionalCreditsAndExtraUsage == legacyEnabled)
+        #expect(defaults.stringArray(forKey: "codexResetCreditExpirySummaryFingerprints") == receipts)
+        settings.codexResetCreditExpiryNotificationsEnabled = false
+        #expect(!testSettingsStore(suiteName: #function, userDefaults: defaults)
+            .codexResetCreditExpiryNotificationsEnabled)
+    }
+
+    @Test
+    func `existing config with legacy default visibility retains Codex expiry alerts`() {
+        let defaults = InMemoryUserDefaults()
+        let settings = testSettingsStore(
+            suiteName: #function,
+            userDefaults: defaults,
+            config: CodexBarConfig.makeDefault())
+        #expect(settings.showOptionalCreditsAndExtraUsage)
+        #expect(settings.codexResetCreditExpiryNotificationsEnabled)
+        #expect(defaults.bool(forKey: "codexResetCreditExpiryNotificationsEnabled"))
     }
 
     @Test

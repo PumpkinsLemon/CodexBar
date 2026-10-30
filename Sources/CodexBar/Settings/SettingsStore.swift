@@ -531,6 +531,12 @@ extension SettingsStore {
             userDefaults.set(debugLogLevelRaw, forKey: "debugLogLevel")
         }
         let notificationDefaults = Self.loadNotificationDefaults(userDefaults: userDefaults)
+        if userDefaults.object(forKey: "codexResetCreditExpiryNotificationsEnabled") == nil {
+            // Preserve expiry alerts for existing recipients; persist fresh-install opt-out before later launches.
+            let legacyAlertsEnabled = hadPreviousInstallationState &&
+                (userDefaults.object(forKey: "showOptionalCreditsAndExtraUsage") as? Bool ?? true)
+            userDefaults.set(legacyAlertsEnabled, forKey: "codexResetCreditExpiryNotificationsEnabled")
+        }
         let quotaWarnings = Self.loadQuotaWarningDefaults(userDefaults: userDefaults)
         let multiAccountMenuLayoutRaw = Self.loadMultiAccountMenuLayoutRaw(userDefaults: userDefaults)
         let resolvedPreferences = Self.loadMenuBarMetricPreferences(userDefaults: userDefaults)
