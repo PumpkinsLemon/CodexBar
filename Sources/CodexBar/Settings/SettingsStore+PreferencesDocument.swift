@@ -7,6 +7,7 @@ extension SettingsStore {
         try document.include(self.syncedPreferences)
         try document.set("limitResetNotificationsEnabled", self.limitResetNotificationsEnabled)
         try document.set("codexResetCreditExpiryNotificationsEnabled", self.codexResetCreditExpiryNotificationsEnabled)
+        try document.set("upcomingResetNotificationsEnabled", self.upcomingResetNotificationsEnabled)
         try document.set("mergeIcons", self.mergeIcons)
         try document.set("mergeIconsStacked", self.mergeIconsStacked)
         try document.set("switcherShowsIcons", self.switcherShowsIcons)
@@ -35,6 +36,9 @@ extension SettingsStore {
         }
         if let value: Bool = try document.value("codexResetCreditExpiryNotificationsEnabled") {
             self.codexResetCreditExpiryNotificationsEnabled = value
+        }
+        if let value: Bool = try document.value("upcomingResetNotificationsEnabled") {
+            self.upcomingResetNotificationsEnabled = value
         }
         if let value: Bool = try document.value("mergeIcons") { self.mergeIcons = value }
         if let value: Bool = try document.value("mergeIconsStacked") { self.mergeIconsStacked = value }
