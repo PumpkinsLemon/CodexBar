@@ -33,7 +33,7 @@ jobs:
           swift --version
       - name: Identify native build context
         id: build-context
-        run: python3 Scripts/ci_swiftpm_cache.py context --lane xcode27-arm64-reset-card
+        run: python3 Scripts/ci_swiftpm_cache.py context --lane xcode27-arm64
       - uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9
         id: native-cache
         with:
