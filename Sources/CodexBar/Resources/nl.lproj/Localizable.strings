@@ -1298,7 +1298,8 @@
 "session_id=...\n\nor paste just the session_id value" = "session_id=...\n\nof plak alleen de session_id-waarde";
 "Clear" = "Duidelijk";
 "No matching providers" = "Geen overeenkomende aanbieders";
-"Search providers" = "Zoekaanbieders";
+"No matching settings or providers" = "Geen overeenkomende instellingen of aanbieders";
+"Search settings" = "Instellingen zoeken";
 "language_arabic" = "العربية";
 "language_persian" = "فارسی";
 "language_thai" = "ไทย";
@@ -2790,3 +2791,14 @@
 "Leave blank to use the default name." = "Laat dit veld leeg om de standaardnaam te gebruiken.";
 "Rewards" = "Beloningen";
 "Reward expiry" = "Vervaldatum beloningen";
+
+"Auto-use expiring reset credits" = "Verlopende resets automatisch gebruiken";
+"Use the current Codex account's available reset credits 5 minutes before expiry. Off by default and local to this Mac. Requires native Codex sign-in, CodexBar running, and the Mac awake. This spends the credit and changes usage limits." = "Gebruikt beschikbare resets van het huidige Codex-account 5 minuten vóór het verlopen. Standaard uit en alleen op deze Mac. Vereist een lokale Codex-aanmelding, een draaiende CodexBar en een wakkere Mac. De reset wordt verbruikt en de gebruikslimieten worden gewijzigd.";
+"Codex reset credit used" = "Codex-reset gebruikt";
+"An expiring reset credit was used automatically. Usage limits are being refreshed." = "Een bijna verlopen reset is automatisch gebruikt. De gebruikslimieten worden vernieuwd.";
+"Codex reset credit could not be used" = "Codex-reset kon niet worden gebruikt";
+"Automatic redemption did not complete. Check Codex before the credit expires." = "Het automatisch gebruiken is niet voltooid. Controleer Codex voordat de reset verloopt.";
+
+"TypeSafe billing overview could not be read. Open https://console.typesafe.ai/billing to check access; if the page opens, report the integration failure." = "Het factureringsoverzicht van TypeSafe kon niet worden gelezen. Open https://console.typesafe.ai/billing om de toegang te controleren. Als de pagina opent, meld dan de integratiefout.";
+
+"No TypeSafe session cookies found. Sign in at console.typesafe.ai/billing or paste a Cookie header." = "Geen TypeSafe-sessiecookies gevonden. Meld je aan op console.typesafe.ai/billing of plak een Cookie-header.";

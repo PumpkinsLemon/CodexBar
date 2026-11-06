@@ -1295,7 +1295,8 @@
 "CodexBar could not update managed account storage." = "CodexBar kunde inte uppdatera hanterad kontolagring.";
 "Clear" = "Rensa";
 "No matching providers" = "Inga matchande leverantörer";
-"Search providers" = "Sök leverantörer";
+"No matching settings or providers" = "Inga matchande inställningar eller leverantörer";
+"Search settings" = "Sök i inställningar";
 
 "language_vietnamese" = "Vietnamesiska";
 "language_arabic" = "العربية";
@@ -2792,3 +2793,14 @@
 "Leave blank to use the default name." = "Lämna tomt för att använda standardnamnet.";
 "Rewards" = "Belöningar";
 "Reward expiry" = "Belöningarnas utgångsdatum";
+
+"Auto-use expiring reset credits" = "Använd snart utgående återställningar automatiskt";
+"Use the current Codex account's available reset credits 5 minutes before expiry. Off by default and local to this Mac. Requires native Codex sign-in, CodexBar running, and the Mac awake. This spends the credit and changes usage limits." = "Använder tillgängliga återställningar för det aktuella Codex-kontot 5 minuter före utgång. Av som standard och endast på denna Mac. Kräver lokal Codex-inloggning, att CodexBar körs och att Macen är vaken. Återställningen förbrukas och användningsgränserna ändras.";
+"Codex reset credit used" = "Codex-återställning använd";
+"An expiring reset credit was used automatically. Usage limits are being refreshed." = "En snart utgående återställning användes automatiskt. Användningsgränserna uppdateras.";
+"Codex reset credit could not be used" = "Codex-återställningen kunde inte användas";
+"Automatic redemption did not complete. Check Codex before the credit expires." = "Den automatiska användningen slutfördes inte. Kontrollera Codex innan återställningen går ut.";
+
+"TypeSafe billing overview could not be read. Open https://console.typesafe.ai/billing to check access; if the page opens, report the integration failure." = "Det gick inte att läsa TypeSafes faktureringsöversikt. Öppna https://console.typesafe.ai/billing för att kontrollera åtkomsten. Om sidan öppnas, rapportera integrationsfelet.";
+
+"No TypeSafe session cookies found. Sign in at console.typesafe.ai/billing or paste a Cookie header." = "Inga sessionskakor för TypeSafe hittades. Logga in på console.typesafe.ai/billing eller klistra in ett Cookie-huvud.";

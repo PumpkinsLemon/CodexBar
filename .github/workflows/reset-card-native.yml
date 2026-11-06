@@ -1,0 +1,79 @@
+name: Codex reset-card native validation
+
+on:
+  pull_request:
+    branches: [mf/ci-base-reset-credit-b9e22db]
+    types: [opened, synchronize, reopened, ready_for_review]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: reset-card-native-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  native-build-and-focused-tests:
+    if: github.repository == 'PumpkinsLemon/CodexBar'
+    runs-on: xcode-27
+    timeout-minutes: 75
+    env:
+      TZ: Asia/Shanghai
+      CODEXBAR_SUPPRESS_TEST_KEYCHAIN_ACCESS: '1'
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - name: Select Xcode 27
+        run: |
+          set -euo pipefail
+          sudo xcode-select -s /Applications/Xcode_27.0.app/Contents/Developer
+          echo 'DEVELOPER_DIR=/Applications/Xcode_27.0.app/Contents/Developer' >> "$GITHUB_ENV"
+          xcodebuild -version
+          swift --version
+      - name: Identify native build context
+        id: build-context
+        run: python3 Scripts/ci_swiftpm_cache.py context --lane xcode27-arm64
+      - uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9
+        id: native-cache
+        with:
+          path: .build
+          key: ${{ steps.build-context.outputs.prefix }}${{ github.sha }}
+          restore-keys: ${{ steps.build-context.outputs.prefix }}
+      - name: Verify cached inputs
+        env:
+          BUILD_CONTEXT: ${{ steps.build-context.outputs.context }}
+          COMPILED_CACHE_KEY: ${{ steps.native-cache.outputs.cache-matched-key }}
+        run: |
+          set -euo pipefail
+          if [[ -z "$COMPILED_CACHE_KEY" ]]; then rm -f .build/ci-inputs.json; fi
+          python3 Scripts/ci_swiftpm_cache.py restore --context "$BUILD_CONTEXT" --clean-fallback
+          python3 Scripts/ci_swiftpm_cache.py snapshot --context "$BUILD_CONTEXT"
+      - name: Repository checks
+        run: make check
+      - name: Build the complete app and run reset-card regression tests
+        run: |
+          ./Scripts/test_fast.sh --filter 'CodexResetCreditAutoRedeemerTests|CodexResetCreditRedemptionTests|CodexRateLimitResetCreditsTests|CodexOAuthResetCreditFetchTests|CodexAccountScopedRefreshTests|SettingsPersistenceContractTests'
+      - name: Package a default-off trial without launching it
+        env:
+          CODEXBAR_SIGNING: adhoc
+          ARCHES: arm64
+        run: |
+          ./Scripts/package_app.sh release
+          ditto -c -k --sequesterRsrc --keepParent CodexBar.app "$RUNNER_TEMP/CodexBar-reset-card-auto-use-arm64.zip"
+          shasum -a 256 "$RUNNER_TEMP/CodexBar-reset-card-auto-use-arm64.zip" > "$RUNNER_TEMP/CodexBar-reset-card-auto-use-arm64.zip.sha256"
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: CodexBar-reset-card-auto-use-arm64
+          path: |
+            ${{ runner.temp }}/CodexBar-reset-card-auto-use-arm64.zip
+            ${{ runner.temp }}/CodexBar-reset-card-auto-use-arm64.zip.sha256
+          if-no-files-found: error
+          retention-days: 7
+      - name: Verify checkout before saving compiled cache
+        run: git diff --exit-code HEAD --
+      - uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9
+        if: ${{ success() && steps.native-cache.outputs.cache-hit != 'true' }}
+        with:
+          path: .build
+          key: ${{ steps.build-context.outputs.prefix }}${{ github.sha }}
